@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormBuilder, FormsModule } from '@angular/forms';
 import { DoctorService } from '../../services/doctor/doctor.service';
 import { Doctor } from '../../models/doctor';
+import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-inregistrare',

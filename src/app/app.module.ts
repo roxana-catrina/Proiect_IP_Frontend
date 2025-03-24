@@ -14,6 +14,8 @@ import { HomeComponent } from './components/home/home.component';
 import { NavbarComponent } from './components/navbar/navbar.component';
 import { FooterComponent } from './components/footer/footer.component';
 import { InregistrareComponent } from './components/inregistrare/inregistrare.component';
+import { DoctorLoginComponent } from './components/doctor-login/doctor-login.component';
+import { PatientLoginComponent } from './components/patient-login/patient-login.component';
 
 @NgModule({
   declarations: [
@@ -26,6 +28,8 @@ import { InregistrareComponent } from './components/inregistrare/inregistrare.co
     HomeComponent,
     NavbarComponent,
     FooterComponent,
+    DoctorLoginComponent,
+    PatientLoginComponent,
   
   ],
   imports: [
