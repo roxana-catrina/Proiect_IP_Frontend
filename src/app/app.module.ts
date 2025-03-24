@@ -1,5 +1,7 @@
 import { NgModule } from '@angular/core';
-import { BrowserModule, provideClientHydration, withEventReplay } from '@angular/platform-browser';
+import { BrowserModule } from '@angular/platform-browser';
+import { FormsModule } from '@angular/forms';
+import { HttpClientModule } from '@angular/common/http';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -11,6 +13,7 @@ import { DoctorComponent } from './components/doctor/doctor.component';
 import { HomeComponent } from './components/home/home.component';
 import { NavbarComponent } from './components/navbar/navbar.component';
 import { FooterComponent } from './components/footer/footer.component';
+import { InregistrareComponent } from './components/inregistrare/inregistrare.component';
 
 @NgModule({
   declarations: [
@@ -22,14 +25,18 @@ import { FooterComponent } from './components/footer/footer.component';
     DoctorComponent,
     HomeComponent,
     NavbarComponent,
-    FooterComponent
+    FooterComponent,
+  
   ],
   imports: [
     BrowserModule,
-    AppRoutingModule
+    FormsModule,
+    HttpClientModule,
+    AppRoutingModule,
+    InregistrareComponent
   ],
   providers: [
-    provideClientHydration(withEventReplay())
+  //  provideClientHydration(withEventReplay())
   ],
   bootstrap: [AppComponent]
 })
