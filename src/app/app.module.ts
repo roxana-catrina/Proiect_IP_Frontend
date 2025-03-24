@@ -8,6 +8,9 @@ import { SensorComponent } from './components/sensor/sensor.component';
 import { RecommendationComponent } from './components/recommendation/recommendation.component';
 import { AlertComponent } from './components/alert/alert.component';
 import { DoctorComponent } from './components/doctor/doctor.component';
+import { HomeComponent } from './components/home/home.component';
+import { NavbarComponent } from './components/navbar/navbar.component';
+import { FooterComponent } from './components/footer/footer.component';
 
 @NgModule({
   declarations: [
@@ -16,7 +19,10 @@ import { DoctorComponent } from './components/doctor/doctor.component';
     SensorComponent,
     RecommendationComponent,
     AlertComponent,
-    DoctorComponent
+    DoctorComponent,
+    HomeComponent,
+    NavbarComponent,
+    FooterComponent
   ],
   imports: [
     BrowserModule,

@@ -1,0 +1,117 @@
+<section class="hero-section text-center">
+    <div class="container">
+        <h1 class="display-4 fw-bold">Bun venit pe platforma noastră</h1>
+        <p class="lead">Soluții inovatoare pentru nevoile dumneavoastră</p>
+        <div class="mt-4">
+            <button class="btn btn-light btn-lg me-2" routerLink="/patient">Începe acum</button>
+            <button class="btn btn-outline-light btn-lg">Află mai multe</button>
+        </div>
+    </div>
+</section>
+
+<div class="container my-5">
+    <div class="row g-4">
+        <!-- Card 1 -->
+        <div class="col-md-4">
+            <div class="card custom-card h-100">
+                <div class="card-body text-center">
+                    <i class="bi bi-speedometer2 text-primary fs-1 mb-3"></i>
+                    <h5 class="card-title">Performanță</h5>
+                    <p class="card-text">Soluții optimizate pentru viteze maxime și eficiență ridicată.</p>
+                    <a routerLink="/patient" class="btn btn-primary">Detalii</a>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Card 2 -->
+        <div class="col-md-4">
+            <div class="card custom-card h-100">
+                <div class="card-body text-center">
+                    <i class="bi bi-shield-check text-success fs-1 mb-3"></i>
+                    <h5 class="card-title">Securitate</h5>
+                    <p class="card-text">Protecție avansată împotriva tuturor amenințărilor online.</p>
+                    <a href="#" class="btn btn-success">Detalii</a>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Card 3 -->
+        <div class="col-md-4">
+            <div class="card custom-card h-100">
+                <div class="card-body text-center">
+                    <i class="bi bi-people text-info fs-1 mb-3"></i>
+                    <h5 class="card-title">Echipa</h5>
+                    <p class="card-text">Specialiști cu experiență în domeniu, dedicați succesului dumneavoastră.</p>
+                    <a href="#" class="btn btn-info">Detalii</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Formular de contact -->
+    <div class="row mt-5">
+        <div class="col-lg-6 mx-auto">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">Contactează-ne</h4>
+                </div>
+                <div class="card-body">
+                    <form>
+                        <div class="mb-3">
+                            <label for="name" class="form-label">Nume complet</label>
+                            <input type="text" class="form-control" id="name" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="email" class="form-label">Adresă email</label>
+                            <input type="email" class="form-control" id="email" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="message" class="form-label">Mesaj</label>
+                            <textarea class="form-control" id="message" rows="3" required></textarea>
+                        </div>
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-primary">Trimite mesaj</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Alert și alte componente -->
+    <div class="row mt-5">
+        <div class="col-12">
+            <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                <strong>Atenție!</strong> Acesta este un mesaj important de test.
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+            
+            <div class="accordion" id="accordionExample">
+                <div class="accordion-item">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne">
+                            Întrebare frecventă #1
+                        </button>
+                    </h2>
+                    <div id="collapseOne" class="accordion-collapse collapse show" data-bs-parent="#accordionExample">
+                        <div class="accordion-body">
+                            Acesta este răspunsul la prima întrebare frecventă.
+                        </div>
+                    </div>
+                </div>
+                <div class="accordion-item">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo">
+                            Întrebare frecventă #2
+                        </button>
+                    </h2>
+                    <div id="collapseTwo" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
+                        <div class="accordion-body">
+                            Acesta este răspunsul la a doua întrebare frecventă.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
