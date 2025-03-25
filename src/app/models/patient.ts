@@ -1,7 +1,7 @@
 export interface Patient {
     firstName: string;
     lastName: string;
-    CNP: string;
+    cnp: string;
     age: number;
     address: string;
     phone: string;

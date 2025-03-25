@@ -30,33 +30,37 @@
     <div class="container">
         <div class="form-container">
             <h2 class="form-title">Patient Registration Form</h2>
-            <form id="inregistreareForm" class="needs-validation" novalidate>
+            <form [formGroup]="patientForm" (ngSubmit)="onSubmit()" class="needs-validation">
                 
                 <!-- Personal Information -->
                 <div class="row mb-3">
                     <div class="col-md-6">
                         <label for="firstName" class="form-label required-field">First Name</label>
-                        <input type="text" class="form-control" id="firstName" name="firstName" required>
-                        <div class="invalid-feedback">Please enter first name</div>
+                        <input type="text" class="form-control" id="firstName" formControlName="firstName">
+                        <div class="invalid-feedback" *ngIf="patientForm.get('firstName')?.errors?.['required']">
+                            Please enter first name
+                        </div>
                     </div>
                     <div class="col-md-6">
                         <label for="lastName" class="form-label required-field">Last Name</label>
-                        <input type="text" class="form-control" id="lastName" name="lastName" required>
-                        <div class="invalid-feedback">Please enter last name</div>
+                        <input type="text" class="form-control" id="lastName" formControlName="lastName">
+                        <div class="invalid-feedback" *ngIf="patientForm.get('lastName')?.errors?.['required']">
+                            Please enter last name
+                        </div>
                     </div>
                 </div>
 
                 <!-- CNP and Age -->
                 <div class="row mb-3">
                     <div class="col-md-6">
-                        <label for="CNP" class="form-label required-field">CNP</label>
-                        <input type="text" class="form-control" id="CNP" name="CNP" required
+                        <label for="cnp" class="form-label required-field">CNP</label>
+                        <input type="text" class="form-control" id="cnp" formControlName="cnp" required
                                pattern="[0-9]+" minlength="13" maxlength="13">
                         <div class="invalid-feedback">Please enter a valid 13-digit CNP</div>
                     </div>
                     <div class="col-md-6">
                         <label for="age" class="form-label required-field">Age</label>
-                        <input type="number" class="form-control" id="age" name="age" min="0" max="120" required>
+                        <input type="number" class="form-control" id="age" formControlName="age" min="0" max="120" required>
                         <div class="invalid-feedback">Please enter a valid age (0-120)</div>
                     </div>
                 </div>
@@ -64,19 +68,19 @@
                 <!-- Contact Information -->
                 <div class="mb-3">
                     <label for="address" class="form-label required-field">Address</label>
-                    <input type="text" class="form-control" id="address" name="address" required>
+                    <input type="text" class="form-control" id="address" formControlName="address" required>
                     <div class="invalid-feedback">Please enter address</div>
                 </div>
 
                 <div class="row mb-3">
                     <div class="col-md-6">
                         <label for="phone" class="form-label required-field">Phone</label>
-                        <input type="tel" class="form-control" id="phone" name="phone" required>
+                        <input type="tel" class="form-control" id="phone"formControlName="phone" required>
                         <div class="invalid-feedback">Please enter phone number</div>
                     </div>
                     <div class="col-md-6">
                         <label for="email" class="form-label required-field">Email</label>
-                        <input type="email" class="form-control" id="email" name="email" required>
+                        <input type="email" class="form-control" id="email" formControlName="email" required>
                         <div class="invalid-feedback">Please enter a valid email</div>
                     </div>
                 </div>
@@ -84,23 +88,27 @@
                 <!-- Medical Information -->
                 <div class="mb-3">
                     <label for="medicalHistory" class="form-label">Medical History</label>
-                    <textarea class="form-control" id="medicalHistory" name="medicalHistory" rows="3"></textarea>
+                    <textarea class="form-control" id="medicalHistory" formControlName="medicalHistory" rows="3"></textarea>
                 </div>
 
-                <!-- Replace the existing doctorId input with this select -->
+                <!-- Doctor Selection -->
                 <div class="mb-3">
                     <label for="doctorId" class="form-label required-field">Select Doctor</label>
-                    <select class="form-select" id="doctorId" name="doctorId" required>
+                    <select class="form-select" id="doctorId" formControlName="doctorName">
                         <option value="">Choose a doctor...</option>
-                        <option *ngFor="let doctor of doctors">
-                             {{doctor.name}} 
+                        <option *ngFor="let doctor of doctors" [value]="doctor.name">
+                           {{doctor.name}} 
                         </option>
                     </select>
-                    <div class="invalid-feedback">Please select a doctor</div>
+                    <div class="invalid-feedback" *ngIf="patientForm.get('doctorName')?.errors?.['required']">
+                        Please select a doctor
+                    </div>
                 </div>
 
                 <div class="d-grid gap-2 mt-4">
-                    <button type="submit" class="btn btn-primary btn-lg">Register Patient</button>
+                    <button type="submit" class="btn btn-primary btn-lg" [disabled]="!patientForm.valid">
+                        Register Patient
+                    </button>
                 </div>
             </form>
         </div>
