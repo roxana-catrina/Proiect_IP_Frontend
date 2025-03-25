@@ -1,0 +1,66 @@
+<div class="container-fluid">
+  <!-- Hero Section -->
+  <section class="hero-section bg-primary text-white py-5 mb-4 rounded">
+    <div class="container">
+      <h1 class="display-4 fw-bold">Dashboard Medic</h1>
+      <p class="lead">Gestionați pacienții dumneavoastră</p>
+    </div>
+  </section>
+
+  <!-- Main Content -->
+  <div class="container">
+    <!-- Buton adăugare pacient -->
+    <div class="d-flex justify-content-end mb-4">
+      <button class="btn btn-primary btn-lg" (click)="addPatient()">
+        <i class="bi bi-plus-circle"></i> Adaugă pacient nou
+      </button>
+    </div>
+
+    <!-- Lista pacienți -->
+    <div class="card shadow-sm">
+      <div class="card-header bg-light">
+        <h5 class="mb-0">Lista pacienți</h5>
+      </div>
+      <div class="card-body">
+        <div class="table-responsive">
+          <table class="table table-hover">
+            <thead>
+              <tr>
+                <th>Nume</th>
+                <th>Prenume</th>
+                <th>CNP</th>
+                <th>Data nașterii</th>
+                <th>Acțiuni</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let patient of patients">
+                <td>{{ patient.lastName }}</td>
+                <td>{{ patient.firstName }}</td>
+                <td>{{ patient.cnp }}</td>
+                <td>{{ patient.age | date:'dd.MM.yyyy' }}</td>
+                <td>
+                  <div class="btn-group" role="group">
+                    <button class="btn btn-outline-warning btn-sm me-2" (click)="editPatient(patient.cnp)">
+                      <i class="bi bi-pencil"></i> Modifică
+                    </button>
+                    <button class="btn btn-outline-danger btn-sm me-2" (click)="deletePatient(patient.cnp)">
+                      <i class="bi bi-trash"></i> Șterge
+                    </button>
+                    <button class="btn btn-outline-info btn-sm" (click)="viewRecommendations(patient.cnp)">
+                      <i class="bi bi-journal-medical"></i> Recomandări
+                    </button>
+                  </div>
+                </td>
+              </tr>
+              <tr *ngIf="patients.length === 0">
+                <td colspan="5" class="text-center text-muted py-4">Nu există pacienți înregistrați</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
