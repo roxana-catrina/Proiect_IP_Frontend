@@ -1,0 +1,71 @@
+<div class="container-fluid">
+    <!-- Hero Section -->
+    <section class="hero-section bg-primary text-white py-5 mb-4 rounded">
+      <div class="container">
+        <h1 class="display-4 fw-bold">Dashboard pacient</h1>
+        <p class="lead">Detalii despre sănătatea dumneavoastră</p>
+      </div>
+    </section>
+  
+    <!-- Main Content -->
+    <div class="container">
+      <!-- Buton Fișă medicală utilizator -->
+      <div class="d-flex justify-content-end mb-4">
+        <button class="btn btn-primary btn-lg">
+          <i class="bi bi-file-earmark-medical"></i> Fișă medicală utilizator
+        </button>
+      </div>
+  
+      <!-- Recomandări -->
+      <div class="card shadow-sm mb-4">
+        <div class="card-header bg-light">
+          <h5 class="mb-0">Recomandări primite de la medic</h5>
+        </div>
+        <div class="card-body">
+          <ul class="list-group">
+            <li class="list-group-item">
+              <strong>Afecțiune:</strong> Hipertensiune <br>
+              <strong>Recomandare:</strong> Urmați un regim alimentar sănătos și măsurați periodic tensiunea arterială.
+            </li>
+            <li class="list-group-item">
+              <strong>Afecțiune:</strong> Astm <br>
+              <strong>Recomandare:</strong> Folosiți inhalatorul conform prescripției medicale.
+            </li>
+          </ul>
+        </div>
+      </div>
+  
+      <!-- Istoric activități -->
+      <div class="card shadow-sm mb-4">
+        <div class="card-header bg-light">
+          <h5 class="mb-0">Istoric activități</h5>
+        </div>
+        <div class="card-body">
+          <p class="lead">Valorile monitorizate de-a lungul timpului</p>
+          <div style="width: 100%; height: 300px;">
+            <canvas id="activityChart"></canvas>
+          </div>
+          <!-- Graficul activităților va fi aici -->
+          <p class="mt-3">Valorile recente: Tensiune arterială: 120/80, Puls: 72 bpm</p>
+        </div>
+      </div>
+  
+      <!-- Avertizări istoric -->
+      <div class="card shadow-sm mb-4">
+        <div class="card-header bg-light">
+          <h5 class="mb-0">Avertizări istorice</h5>
+        </div>
+        <div class="card-body">
+          <div class="alert alert-warning" role="alert">
+            <strong>Avertizare:</strong> Tensiune arterială prea mare! <br>
+            <strong>Dată și oră:</strong> 25.03.2025 15:30
+          </div>
+          <div class="alert alert-warning" role="alert">
+            <strong>Avertizare:</strong> Puls prea rapid! <br>
+            <strong>Dată și oră:</strong> 24.03.2025 10:15
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
