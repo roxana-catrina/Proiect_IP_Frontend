@@ -17,6 +17,7 @@ import { InregistrareComponent } from './components/inregistrare/inregistrare.co
 import { DoctorLoginComponent } from './components/doctor-login/doctor-login.component';
 import { PatientLoginComponent } from './components/patient-login/patient-login.component';
 import { DashboardDoctorComponent } from './components/dashboard-doctor/dashboard-doctor.component';
+import { DashboardPatientComponent } from './components/dashboard-patient/dashboard-patient.component';
 
 @NgModule({
   declarations: [
@@ -30,19 +31,15 @@ import { DashboardDoctorComponent } from './components/dashboard-doctor/dashboar
     NavbarComponent,
     FooterComponent,
     DoctorLoginComponent,
-    PatientLoginComponent,
-   
-    
-  
+    PatientLoginComponent
   ],
   imports: [
     BrowserModule,
     FormsModule,
     HttpClientModule,
     AppRoutingModule,
-  
-    InregistrareComponent,
-    DashboardDoctorComponent
+    DashboardDoctorComponent,
+    DashboardPatientComponent
   ],
   providers: [
   //  provideClientHydration(withEventReplay())

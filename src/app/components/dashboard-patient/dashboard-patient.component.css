@@ -1,0 +1,17 @@
+/* Stiluri suplimentare personalizate */
+.container-fluid {
+    margin-top: 20px;
+  }
+  
+  .card-header {
+    font-weight: bold;
+  }
+  
+  .card-body {
+    padding: 1.5rem;
+  }
+  
+  .alert {
+    margin-bottom: 10px;
+  }
+  
