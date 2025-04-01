@@ -32,6 +32,20 @@
             padding-top: 20px;
             border-top: 1px solid #dee2e6;
         }
+        .error-message {
+            color: red;
+            font-size: 0.875em;
+        }
+        .search-section {
+            margin-top: 20px;
+        }
+        .doctors-list {
+            margin-top: 10px;
+        }
+        .doctor-item {
+            padding: 5px;
+            border-bottom: 1px solid #dee2e6;
+        }
     </style>
 </head>
 <body>
@@ -40,36 +54,56 @@
             <h2 class="login-title">
                 <i class="bi bi-person-badge"></i> Autentificare Doctor
             </h2>
-            <form id="doctorLoginForm">
-                <div class="mb-3">
-                    <label for="doctorEmail" class="form-label">Email</label>
-                    <div class="input-group">
-                        <span class="input-group-text"><i class="bi bi-envelope"></i></span>
-                        <input type="email" class="form-control" id="doctorEmail" name="email" required>
+            <form [formGroup]="loginForm" (ngSubmit)="login()">
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input 
+                        type="email" 
+                        id="email"
+                        formControlName="email"
+                        class="form-control"
+                        placeholder="Introduceți email-ul"
+                    >
+                    <div *ngIf="loginForm.get('email')?.touched && loginForm.get('email')?.invalid" class="error-message">
+                        <div *ngIf="loginForm.get('email')?.errors?.['required']">Email-ul este obligatoriu</div>
+                        <div *ngIf="loginForm.get('email')?.errors?.['email']">Email invalid</div>
                     </div>
-                    <div class="invalid-feedback">Introduceți o adresă de email validă</div>
                 </div>
 
-                <div class="mb-3">
-                    <label for="doctorPassword" class="form-label">Parolă</label>
-                    <div class="input-group">
-                        <span class="input-group-text"><i class="bi bi-lock"></i></span>
-                        <input type="password" class="form-control" id="doctorPassword" name="password" required>
+                <div class="form-group">
+                    <label for="password">Parolă</label>
+                    <input 
+                        type="password" 
+                        id="password"
+                        formControlName="password"
+                        class="form-control"
+                        placeholder="Introduceți parola"
+                    >
+                    <div *ngIf="loginForm.get('password')?.touched && loginForm.get('password')?.invalid" class="error-message">
+                        <div *ngIf="loginForm.get('password')?.errors?.['required']">Parola este obligatorie</div>
                     </div>
-                    <div class="invalid-feedback">Introduceți parola</div>
                 </div>
 
-                <div class="mb-3 form-check">
-                    <input type="checkbox" class="form-check-input" id="rememberDoctor">
-                    <label class="form-check-label" for="rememberDoctor">Ține-mă minte</label>
-                </div>
-
-                <div class="d-grid gap-2">
-                    <button type="submit" class="btn btn-doctor btn-lg">
-                        <i class="bi bi-box-arrow-in-right"></i> Autentificare
-                    </button>
-                </div>
+                <button type="submit" [disabled]="!loginForm.valid || isSpinning" >
+                    {{ isSpinning ? 'Se încarcă...' : 'Autentificare' }}
+                </button>
             </form>
+
+            <!-- <div class="search-section">
+                <input 
+                    type="text" 
+                    [(ngModel)]="searchTerm"
+                    (input)="searchDoctors()"
+                    placeholder="Caută doctori după email..."
+                    [ngModelOptions]="{standalone: true}"
+                >
+
+              <div class="doctors-list" *ngIf="filteredDoctors.length > 0">
+                    <div class="doctor-item" *ngFor="let doctor of filteredDoctors">
+                        {{ doctor.email }}
+                    </div>
+                </div>
+            </div> -->
 
             <div class="form-footer">
                 <p>Nu aveți cont? <a href="/doctor-register">Înregistrare Doctor</a></p>
@@ -82,33 +116,5 @@
             </div>
         </div>
     </div>
-
-    <!-- Bootstrap JS Bundle with Popper -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    
-    <script>
-        (function() {
-            'use strict';
-            const form = document.getElementById('doctorLoginForm');
-            
-            form.addEventListener('submit', function(event) {
-                if (!form.checkValidity()) {
-                    event.preventDefault();
-                    event.stopPropagation();
-                }
-                
-                form.classList.add('was-validated');
-                
-                if (form.checkValidity()) {
-                    event.preventDefault();
-                    const formData = new FormData(form);
-                    const loginData = Object.fromEntries(formData.entries());
-                    
-                    console.log('Doctor Login Data:', loginData);
-                    alert('Autentificare reușită! (simulat)');
-                }
-            }, false);
-        })();
-    </script>
 </body>
 </html>
