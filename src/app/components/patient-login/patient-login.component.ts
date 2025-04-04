@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Patient } from '../../models/patient';
 import { LoginService } from '../../services/login/login.service';
@@ -12,12 +12,13 @@ import { StorageService } from '../../services/storage/storage.service';
   templateUrl: './patient-login.component.html',
   styleUrl: './patient-login.component.css'
 })
-export class PatientLoginComponent {
+export class PatientLoginComponent implements OnInit {
   loginForm: FormGroup;
   isSpinning: boolean = false;
   searchTerm: string = '';
   patients: Patient[] = [];
   filteredPatients: Patient[] = [];
+  currentPatient: Patient | null = null;
 
   constructor(
     private service: LoginService,
@@ -65,7 +66,7 @@ export class PatientLoginComponent {
           if (res.email) {
             StorageService.saveUser({ email: res.email });
             StorageService.saveToken(res.jwt);
-            this.router.navigate(['/patient']);
+            this.loadPatientData(res.email);
           }
         },
         error: (err) => {
@@ -83,5 +84,18 @@ export class PatientLoginComponent {
         }
       });
     }
+  }
+
+  loadPatientData(email: string) {
+    this.authService.getPatientByEmail(email).subscribe({
+      next: (patient: Patient) => {
+        this.currentPatient = patient;
+        this.router.navigate(['/patient']);
+      },
+      error: (error) => {
+        console.error('Error loading patient data:', error);
+        alert('Nu s-au putut încărca datele pacientului.');
+      }
+    });
   }
 }

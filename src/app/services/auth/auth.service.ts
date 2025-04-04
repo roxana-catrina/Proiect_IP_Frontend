@@ -22,9 +22,6 @@ export class AuthService {
     });
   }
 
-
-
-
   doctorLogin(loginData: { email: string; password: string }): Observable<any> {
     return this.http.post('/api/doctor/login', loginData);
   }
@@ -36,5 +33,9 @@ export class AuthService {
   }
   getAllPatients(): Observable<Patient[]> {
     return this.http.get<Patient[]>(`${this.apiUrl}/api/patients`);
+  }
+
+  getPatientByEmail(email: string): Observable<Patient> {
+    return this.http.get<Patient>(`${this.apiUrl}/api/patients/email/${email}`);
   }
 }
