@@ -25,11 +25,11 @@ export class StorageService {
   static getToken() {
     return window.localStorage.getItem(TOKEN);
   }
-  /* static getUser() {
-    const user = localStorage.getItem(EMAIL);
-    return user ? JSON.parse(user) : null;
+  static getPatient() {
+    const pacient = localStorage.getItem(EMAIL);
+    return pacient ? JSON.parse(pacient) : null;
 
-  } */
+  } 
   static isUserLoggedIn(): boolean {
     if (this.getToken()) {
       return true;

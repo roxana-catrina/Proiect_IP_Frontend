@@ -14,4 +14,31 @@
   .alert {
     margin-bottom: 10px;
   }
-  
+
+.list-group-item {
+  border-left: none;
+  border-right: none;
+  border-radius: 0;
+}
+
+.list-group-item strong {
+  color: #2c3e50;
+  margin-right: 10px;
+}
+
+.list-group-flush .list-group-item:first-child {
+  border-top: 0;
+}
+
+.card {
+  transition: transform 0.2s;
+}
+
+.card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1) !important;
+}
+
+.bg-light {
+  background-color: #f8f9fa !important;
+}
