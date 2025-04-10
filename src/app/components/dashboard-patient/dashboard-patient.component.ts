@@ -6,30 +6,34 @@ import { PatientService } from '../../services/patient/patient.service';
 import { Recommendation } from '../../models/recommendation';
 import { CommonModule } from '@angular/common';
 import { DoctorService } from '../../services/doctor/doctor.service';
+import { AlertService } from '../../services/alert/alert.service';
+import { Alert } from '../../models/alert';
+import { Router } from '@angular/router';
 @Component({
   selector: 'app-dashboard-patient',
   templateUrl: './dashboard-patient.component.html',
   styleUrls: ['./dashboard-patient.component.css'],
   imports: [CommonModule]
+  
 })
 
 export class DashboardPatientComponent implements OnInit {
   patient: Patient | null = null;
   recommendations: Recommendation[] = [];
   doctorNames: Map<string, string> = new Map();
+  alerts: Alert[] = [];
+
 
   constructor(private authService: AuthService, private patientService: PatientService,
-    private doctorService: DoctorService, private storageService: StorageService
+    private doctorService: DoctorService, private storageService: StorageService,
+    private alertService: AlertService,
+    private router: Router
   ) {}
 
   ngOnInit() {
     const patient = StorageService.getPatient();
     if (patient && patient.email) {
       this.loadPatientData(patient.email);
-      console.log('Patient data loaded:', patient);
-    }
-    if (this.patient?.id) {
-      this.loadPatientRecommendations(this.patient.id);
     }
   }
 
@@ -39,6 +43,7 @@ export class DashboardPatientComponent implements OnInit {
         this.patient = patient;
         if (patient.id) {
           this.loadPatientRecommendations(patient.id);
+          this.loadAlerts(); // Move loadAlerts here after patient data is loaded
         }
       },
       error: (error) => {
@@ -71,5 +76,32 @@ export class DashboardPatientComponent implements OnInit {
         }
       });
     }
+  }
+
+  private loadAlerts() {
+    if (!this.patient?.id) {
+      console.error('Cannot load alerts: Patient ID is missing');
+      return;
+    }
+
+    this.alertService.getPacientAlerts(this.patient.id).subscribe({
+      next: (alerts: Alert[]) => {
+        this.alerts = alerts.sort((a, b) => 
+          new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()
+        );
+        console.log('Alerts loaded successfully:', this.alerts);
+      },
+      error: (error) => {
+        console.error('Error loading alerts:', error);
+        this.alerts = [];
+      },
+      complete: () => {
+        console.log('Alerts loading completed');
+      }
+    });
+  }
+  logout(): void {
+    StorageService.logout();
+    this.router.navigate(['/home']); // or wherever you want to redirect after logout
   }
 }
