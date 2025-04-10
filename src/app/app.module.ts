@@ -18,6 +18,7 @@ import { DoctorLoginComponent } from './components/doctor-login/doctor-login.com
 import { PatientLoginComponent } from './components/patient-login/patient-login.component';
 import { DashboardDoctorComponent } from './components/dashboard-doctor/dashboard-doctor.component';
 import { DashboardPatientComponent } from './components/dashboard-patient/dashboard-patient.component';
+import { ModificareDatePacientComponent } from './components/modificare-date-pacient/modificare-date-pacient.component';
 
 @NgModule({
   declarations: [
@@ -35,12 +36,14 @@ import { DashboardPatientComponent } from './components/dashboard-patient/dashbo
   ],
   imports: [
     BrowserModule,
+    BrowserModule,
     FormsModule,
     HttpClientModule,
     AppRoutingModule,
     DashboardDoctorComponent,
     DashboardPatientComponent,
-    ReactiveFormsModule 
+    ReactiveFormsModule,
+    ModificareDatePacientComponent,
   ],
   providers: [
   //  provideClientHydration(withEventReplay())

@@ -38,4 +38,8 @@ export class AuthService {
   getPatientByEmail(email: string): Observable<Patient> {
     return this.http.get<Patient>(`${this.apiUrl}/api/patients/email/${email}`);
   }
+
+  updatePatient(id: string, updateData: Patient): Observable<Patient> {
+    return this.http.put<Patient>(`${this.apiUrl}/api/patient/${id}`, updateData);
+  }
 }

@@ -5,16 +5,18 @@ import { StorageService } from '../../services/storage/storage.service';
 import { PatientService } from '../../services/patient/patient.service';
 import { Recommendation } from '../../models/recommendation';
 import { CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router';
 import { DoctorService } from '../../services/doctor/doctor.service';
 import { AlertService } from '../../services/alert/alert.service';
 import { Alert } from '../../models/alert';
 import { Router } from '@angular/router';
+
 @Component({
   selector: 'app-dashboard-patient',
   templateUrl: './dashboard-patient.component.html',
   styleUrls: ['./dashboard-patient.component.css'],
-  imports: [CommonModule]
-  
+  imports: [CommonModule, RouterModule],
+  standalone: true
 })
 
 export class DashboardPatientComponent implements OnInit {

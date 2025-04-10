@@ -1,0 +1,42 @@
+<div class="container mt-5">
+    <h2 class="mb-4">Modificare Date Pacient</h2>
+  <form [formGroup]="updateForm" (ngSubmit)="onSubmit()">
+      <div class="row">
+        <div class="col-md-6 mb-3">
+          <label>Prenume</label>
+          <input type="text" class="form-control" formControlName="firstName">
+        </div>
+        <div class="col-md-6 mb-3">
+          <label>Nume</label>
+          <input type="text" class="form-control" formControlName="lastName">
+        </div>
+      </div>
+  
+     
+        <div class="col-md-6 mb-3">
+          <label>Vârstă</label>
+          <input type="number" class="form-control" formControlName="age">
+        </div>
+      
+  
+      <div class="mb-3">
+        <label>Adresă</label>
+        <input type="text" class="form-control" formControlName="address">
+      </div>
+  
+      <div class="mb-3">
+        <label>Telefon</label>
+        <input type="text" class="form-control" formControlName="phone">
+      </div>
+  
+  
+
+      <div class="mb-3">
+        <label>Parolă</label>
+        <input type="password" class="form-control" formControlName="password">
+      </div>
+  
+      <button type="submit" class="btn btn-success" >Salvează modificările</button>
+   </form> 
+  </div>
+  

@@ -9,4 +9,5 @@ export interface Patient {
     email: string;
     medicalHistory?: string;
     doctorId: string;
+    password: string;
 }
