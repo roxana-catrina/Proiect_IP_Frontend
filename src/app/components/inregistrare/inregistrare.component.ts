@@ -34,7 +34,8 @@ export class InregistrareComponent implements OnInit {
       email: ['', [Validators.required, Validators.email]],
       medicalHistory: [''],
       //doctorId: ['', Validators.required],
-      doctorName: ['', Validators.required]
+      doctorName: ['', Validators.required],
+      password: ['', [Validators.required, Validators.minLength(2)]]
     });
   }
 
@@ -66,7 +67,8 @@ export class InregistrareComponent implements OnInit {
         phone: formData.phone,
         email: formData.email,
         medicalHistory: formData.medicalHistory,
-        doctorId: "1"
+        doctorId: "1",
+        password: formData.password,
       };
       console.log('Form Data:', {
         firstName: formData.firstName,
@@ -83,7 +85,7 @@ export class InregistrareComponent implements OnInit {
       this.inregistrareService.createPatient(patientData, formData.doctorName).subscribe({
         next: (response) => {
           console.log('Patient registered successfully:', response);
-          this.router.navigate(['/patient-login']);
+          this.router.navigate(['/home']);
         },
         error: (error) => {
           console.error('Error registering patient:', error);

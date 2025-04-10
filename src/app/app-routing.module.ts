@@ -7,6 +7,7 @@ import { PatientLoginComponent } from './components/patient-login/patient-login.
 import { DoctorLoginComponent } from './components/doctor-login/doctor-login.component';
 import { DashboardDoctorComponent } from './components/dashboard-doctor/dashboard-doctor.component';
 import { DashboardPatientComponent } from './components/dashboard-patient/dashboard-patient.component';
+import { ModificareDatePacientComponent } from './components/modificare-date-pacient/modificare-date-pacient.component';
 
 
 const routes: Routes = [
@@ -19,6 +20,7 @@ const routes: Routes = [
   //{ path: '**', redirectTo: '/home' },
   {path: 'doctor', component: DashboardDoctorComponent},
   //{path: 'patient', component: DashboardPatientComponent}
+  {path: 'modificare',component: ModificareDatePacientComponent},
 ];
 
 @NgModule({
