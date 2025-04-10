@@ -75,23 +75,17 @@
                   </tr>
                 </thead>
                 <tbody>
-                  <tr *ngFor="let activity of recommendations">
+                  <tr *ngFor="let activity of recommendations ; let i = index">
                     <td>{{activity.activityType}}</td>
                     <td>{{activity.duration}}</td>
                     <td>{{activity.createdAt}}</td>
-                    <td>{{activity.doctorId}}</td>
+                  {{getDoctorName(activity.doctorId)}}
+                    <td>{{doctorNames.get(activity.doctorId) || 'Loading...'}} </td>
                   </tr>
                 </tbody>
               </table>
             </div>
-            <div class="recommendation" *ngFor="let rec of recommendations">
-              <div class="doctor-info">
-                <span>Doctor: {{ doctorNames.get(rec.doctorId) || 'Loading...' }}</span>
-                <!-- Call getDoctorName when recommendation is displayed -->
-                {{ getDoctorName(rec.doctorId) }}
-              </div>
-              <!-- ...rest of recommendation display... -->
-            </div>
+            
           </div>
           <ng-template #noActivities>
             <p class="text-muted text-center">Nu există activități înregistrate.</p>
@@ -104,16 +98,18 @@
         <div class="card-header bg-light">
           <h5 class="mb-0">Avertizări istorice</h5>
         </div>
+        <tr *ngFor="let activity of alerts" >
         <div class="card-body">
           <div class="alert alert-warning" role="alert">
-            <strong>Avertizare:</strong> Tensiune arterială prea mare! <br>
-            <strong>Dată și oră:</strong> 25.03.2025 15:30
+            <strong>Avertizare:</strong>{{ activity.message }}  <br>
+            <strong>Dată și oră:</strong> {{activity.timestamp}}
           </div>
-          <div class="alert alert-warning" role="alert">
-            <strong>Avertizare:</strong> Puls prea rapid! <br>
-            <strong>Dată și oră:</strong> 24.03.2025 10:15
-          </div>
+         
         </div>
       </div>
     </div>
+
+    <button class="btn btn-primary btn-lg" (click)="logout()">
+      <i class="bi bi-file-earmark-medical"></i> Logout
+    </button>
 </div>
