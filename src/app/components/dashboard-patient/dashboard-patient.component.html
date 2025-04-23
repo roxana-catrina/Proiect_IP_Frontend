@@ -116,6 +116,93 @@
       </div>
     </div>
 
+
+
+     <!-- Secțiune EKG -->
+     <div class="card shadow-sm mb-4">
+      <div class="card-header bg-light">
+        <h5 class="mb-0">Diagrama EKG</h5>
+        
+      </div>
+      <div class="card-body">
+        <div id="ekg-chart-container" style="height: 300px;">
+          <!-- Aici poți adăuga un grafic EKG dinamic, folosește Chart.js sau Plotly pentru a-l adăuga -->
+          <tr *ngFor="let activity of sensors ; let i = index">
+            <td>{{activity.ekgSignal}}</td>
+          </tr>
+          <canvas id="ekg-chart"></canvas>
+        </div>
+      </div>
+    </div>
+
+
+
+     <!-- Secțiune Bătăi Inimii -->
+     <div class="card shadow-sm mb-4">
+      <div class="card-header bg-light">
+        <h5 class="mb-0">Bătăi ale inimii</h5>
+      </div>
+      <div class="card-body">
+        <div class="d-flex justify-content-between">
+          <div>
+            <h6>Ritm Cardiac:</h6>
+            <tr *ngFor="let activity of sensors ; let i = index">
+              <td>{{activity.heartRate}}</td>
+            </tr>
+            <p class="lead"> BPM</p>
+          </div>
+          <div>
+            <canvas id="heart-rate-chart" width="300" height="150"></canvas>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Secțiune Temperatura -->
+    <div class="card shadow-sm mb-4">
+      <div class="card-header bg-light">
+        <h5 class="mb-0">Temperatură</h5>
+      </div>
+      <div class="card-body">
+        <div class="d-flex justify-content-between">
+          <div>
+            <h6>Temperatura corpului:</h6>
+            <tr *ngFor="let activity of sensors ; let i = index">
+              <td>{{activity.temperature}}</td>
+            </tr>
+            <p class="lead"></p>
+          </div>
+          <div>
+            <canvas id="temperature-chart" width="300" height="150"></canvas>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Secțiune Umiditate -->
+    <div class="card shadow-sm mb-4">
+      <div class="card-header bg-light">
+        <h5 class="mb-0">Umiditate</h5>
+      </div>
+      <div class="card-body">
+        <div class="d-flex justify-content-between">
+          <div>
+            <h6>Umiditatea aerului:</h6>
+            <tr *ngFor="let activity of sensors ; let i = index">
+            <td>{{activity.humidity}}</td>
+          </tr>
+            <p class="lead">   </p>
+          </div>
+          <div>
+            <canvas id="humidity-chart" width="300" height="150"></canvas>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+
+
     <button class="btn btn-primary btn-lg" (click)="logout()">
       <i class="bi bi-file-earmark-medical"></i> Logout
     </button>
