@@ -10,6 +10,7 @@ import { DoctorService } from '../../services/doctor/doctor.service';
 import { AlertService } from '../../services/alert/alert.service';
 import { Alert } from '../../models/alert';
 import { Router } from '@angular/router';
+import { Sensor } from '../../models/sensor';
 
 @Component({
   selector: 'app-dashboard-patient',
@@ -24,6 +25,7 @@ export class DashboardPatientComponent implements OnInit {
   recommendations: Recommendation[] = [];
   doctorNames: Map<string, string> = new Map();
   alerts: Alert[] = [];
+  sensors: Sensor[] = [];
 
 
   constructor(private authService: AuthService, private patientService: PatientService,
@@ -45,6 +47,7 @@ export class DashboardPatientComponent implements OnInit {
         this.patient = patient;
         if (patient.id) {
           this.loadPatientRecommendations(patient.id);
+          this.loadPatientSensors(patient.id);
           this.loadAlerts(); // Move loadAlerts here after patient data is loaded
         }
       },
@@ -65,6 +68,20 @@ export class DashboardPatientComponent implements OnInit {
         }
       });
   }
+
+
+  private loadPatientSensors(patientId: string) {
+    this.patientService.getPatientSensors(patientId)
+      .subscribe({
+        next: (sensors) => {
+          this.sensors = sensors;
+        },
+        error: (error) => {
+          console.error('Error loading patient sensors:', error);
+        }
+      });
+  }
+
 
   getDoctorName(doctorId: string): void {
     if (!this.doctorNames.has(doctorId)) {
