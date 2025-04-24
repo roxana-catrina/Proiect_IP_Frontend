@@ -30,6 +30,14 @@ export class StorageService {
     return pacient ? JSON.parse(pacient) : null;
 
   } 
+
+  static getDoctor() {
+    const pacient = localStorage.getItem(EMAIL);
+    return pacient ? JSON.parse(pacient) : null;
+
+  } 
+
+
   static isUserLoggedIn(): boolean {
     if (this.getToken()) {
       return true;

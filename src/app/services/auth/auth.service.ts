@@ -42,4 +42,8 @@ export class AuthService {
   updatePatient(id: string, updateData: Patient): Observable<Patient> {
     return this.http.put<Patient>(`${this.apiUrl}/api/patient/${id}`, updateData);
   }
+
+  getDoctorAllPatients(email: string): Observable<Patient[]> {
+    return this.http.get<Patient[]>(`${this.apiUrl}/api/doctors/email/${email}`);
+  }
 }
