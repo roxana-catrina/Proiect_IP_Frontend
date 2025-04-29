@@ -63,29 +63,30 @@ export class DashboardDoctorComponent implements OnInit {
    /*  console.log('Editing patient with ID:', id);
     this.router.navigate(['/edit-patient', id]); */
   }
-  deletePatient(id: string): void {
-   /*  if (confirm('Sunteți sigur că doriți să ștergeți acest pacient?')) {
-      this.patientService.deletePatient(id).subscribe({
+  deletePatient(email: string): void {
+    if (confirm('Ești sigur că vrei să ștergi acest pacient?')) {
+      this.authService.deletePatient(email).subscribe({
         next: () => {
           console.log('Patient deleted successfully');
-          // Remove patient from the local array
-          this.patients = this.patients.filter(p => p.id !== id);
+          // Remove patient from local arrays
+          this.allPatients = this.allPatients.filter(p => p.email !== email);
+          this.patients = this.patients.filter(p => p.email !== email);
         },
         error: (error) => {
           console.error('Error deleting patient:', error);
-          // Show error message to user
-          alert('A apărut o eroare la ștergerea pacientului.');
         }
-      }); */
+      });
     }
-    addPatient(): void {
+  }
+  addPatient(): void {
    //   this.router.navigate(['/inregistrare']);
-    }
+  }
 
 
-    viewRecommendations(patientId: string): void {
-      /* console.log('Viewing recommendations for patient:', patientId);
-      this.router.navigate(['/recommendations', patientId]); */
-    }
+  viewRecommendations(patientId: string): void {
+    /* console.log('Viewing recommendations for patient:', patientId);
+    this.router.navigate(['/recommendations', patientId]); */
+  }
   
 }
+

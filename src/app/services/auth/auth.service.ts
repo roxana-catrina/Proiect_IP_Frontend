@@ -46,4 +46,9 @@ export class AuthService {
   getDoctorAllPatients(email: string): Observable<Patient[]> {
     return this.http.get<Patient[]>(`${this.apiUrl}/api/doctors/email/${email}`);
   }
+
+  deletePatient(email: string): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/api/patients/${email}`);
 }
+}
+
