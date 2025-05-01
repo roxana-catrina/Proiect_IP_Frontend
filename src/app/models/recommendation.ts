@@ -1,4 +1,5 @@
 export interface Recommendation {
+status: any;
     id: string;
     patientId: string;
     doctorId: string;

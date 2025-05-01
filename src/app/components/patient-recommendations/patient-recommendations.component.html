@@ -1,0 +1,76 @@
+
+<div class="container-fluid">
+    <!-- Header Section -->
+    <section class="header-section bg-info text-white py-4 mb-4 rounded">
+      <div class="container">
+        <h2 class="mb-2">Recomandări Medicale</h2>
+        <p class="mb-0">Pacient: {{patient?.firstName}} {{patient?.lastName}}</p>
+        <p class="small">CNP: {{patient?.cnp}}</p>
+        <p class="small">Vârstă: {{patient?.age}} ani</p>
+        <p class="small">Email: {{patient?.email}}</p>
+      </div>
+    </section>
+  
+    <div class="container">
+      <!-- Add New Recommendation Form -->
+      <div class="card mb-4">
+        <div class="card-header bg-light">
+          <h5 class="mb-0">Adaugă Recomandare Nouă</h5>
+        </div>
+        <div class="card-body">
+          <form [formGroup]="recommendationForm" (ngSubmit)="onSubmit()">
+            <div class="mb-3">
+              <label class="form-label">Tip Activitate</label>
+              <input type="text" class="form-control" formControlName="activityType" placeholder="Ex: Exerciții fizice, Dietă, Medicamente" required>
+            </div>
+            
+        
+            
+            <div class="mb-3">
+              <label class="form-label">Durată (minute)</label>
+              <textarea class="form-control"  formControlName="duration"></textarea>
+            </div>
+  
+            <button type="submit" class="btn btn-primary">
+              Adaugă Recomandare
+            </button>
+         </form>
+        </div>
+      </div>
+  
+      <!-- Existing Recommendations List -->
+      <div class="card">
+        <div class="card-header bg-light d-flex justify-content-between align-items-center">
+          <h5 class="mb-0">Istoric Recomandări</h5>
+        </div>
+        <div class="card-body">
+          <div *ngIf="recommendations.length > 0; else noRecommendations">
+            <div class="table-responsive">
+              <table class="table table-hover">
+                <thead>
+                  <tr>
+                    <th>Tip Activitate</th>
+                    <th>Durată</th>
+                    <th>Data</th>
+                    <th>Doctor</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let activity of recommendations ; let i = index">
+                    <td>{{activity.activityType}}</td>
+                    <td>{{activity.duration}}</td>
+                    <td>{{activity.createdAt}}</td>
+                  {{getDoctorName(activity.doctorId)}}
+                    <td>{{doctorNames.get(activity.doctorId) || 'Loading...'}} </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <ng-template #noRecommendations>
+            <p class="text-center text-muted py-3">Nu există recomandări pentru acest pacient</p>
+          </ng-template>
+        </div>
+      </div>
+    </div>
+  </div>

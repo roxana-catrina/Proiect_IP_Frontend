@@ -8,6 +8,8 @@ import { DoctorLoginComponent } from './components/doctor-login/doctor-login.com
 import { DashboardDoctorComponent } from './components/dashboard-doctor/dashboard-doctor.component';
 import { DashboardPatientComponent } from './components/dashboard-patient/dashboard-patient.component';
 import { ModificareDatePacientComponent } from './components/modificare-date-pacient/modificare-date-pacient.component';
+import { RecommendationComponent } from './components/recommendation/recommendation.component';
+import { PatientRecommendationsComponent } from './components/patient-recommendations/patient-recommendations.component';
 
 
 const routes: Routes = [
@@ -21,6 +23,7 @@ const routes: Routes = [
   {path: 'doctor', component: DashboardDoctorComponent},
   //{path: 'patient', component: DashboardPatientComponent}
   {path: 'modificare',component: ModificareDatePacientComponent},
+  {path: 'recomendations',component:PatientRecommendationsComponent},
 ];
 
 @NgModule({

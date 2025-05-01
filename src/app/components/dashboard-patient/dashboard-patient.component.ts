@@ -11,6 +11,7 @@ import { AlertService } from '../../services/alert/alert.service';
 import { Alert } from '../../models/alert';
 import { Router } from '@angular/router';
 import { Sensor } from '../../models/sensor';
+import { Doctor } from '../../models/doctor';
 
 @Component({
   selector: 'app-dashboard-patient',
@@ -26,8 +27,7 @@ export class DashboardPatientComponent implements OnInit {
   doctorNames: Map<string, string> = new Map();
   alerts: Alert[] = [];
   sensors: Sensor[] = [];
-
-
+doctors: Doctor[] = [];
   constructor(private authService: AuthService, private patientService: PatientService,
     private doctorService: DoctorService, private storageService: StorageService,
     private alertService: AlertService,
@@ -38,6 +38,7 @@ export class DashboardPatientComponent implements OnInit {
     const patient = StorageService.getPatient();
     if (patient && patient.email) {
       this.loadPatientData(patient.email);
+      this.loadAllDoctors(); // Load all doctors when the component initializes
     }
   }
 
@@ -82,20 +83,41 @@ export class DashboardPatientComponent implements OnInit {
       });
   }
 
-
-  getDoctorName(doctorId: string): void {
-    if (!this.doctorNames.has(doctorId)) {
-      this.doctorService.getDoctorById(doctorId).subscribe({
-        next: (doctor) => {
-          this.doctorNames.set(doctorId, `${doctor.name}`);
-        },
-        error: (error) => {
-          console.error('Error loading doctor:', error);
-          this.doctorNames.set(doctorId, 'Unknown Doctor');
-        }
-      });
-    }
+private loadAllDoctors() {
+    this.doctorService.getAllDoctors().subscribe({
+      next: (doctors: Doctor[]) => {
+        this.doctors = doctors;
+        // Create a map of doctor names for quick lookup
+        doctors.forEach(doctor => {
+          const fullName = doctor.name;
+          this.doctorNames.set(doctor.id, fullName);
+        });
+        console.log('All doctors loaded:', this.doctors);
+      },
+      error: (error) => {
+        console.error('Error loading doctors:', error);
+      }
+    });
   }
+
+  getDoctorName(doctorId: string): void  {
+    // First check if we already have the name cached
+    if (this.doctorNames.has(doctorId)) {
+      this.doctorNames.get(doctorId) || 'Doctor necunoscut';
+    }
+
+    // Find doctor in the loaded doctors array
+    const doctor = this.doctors.find(d => d.id === doctorId);
+    if (doctor) {
+     // const fullName = `${doctor.name}`;
+      this.doctorNames.set(doctorId, doctor.name);
+      
+    }
+
+    console.log('Doctor not found in list, ID:', doctorId);
+    ;
+  }
+ 
 
   private loadAlerts() {
     if (!this.patient?.id) {
