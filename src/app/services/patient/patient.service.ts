@@ -17,6 +17,8 @@ export class PatientService {
     return this.http.get<Recommendation[]>(`${this.API_URL}/recommendations/${patientId}`);
   }
 
+ 
+
   getPatientSensors(patientId: string): Observable<Sensor[]> {
     return this.http.get<Sensor[]>(`${this.API_URL}/sensors/${patientId}`);
   }

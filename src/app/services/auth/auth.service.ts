@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable, map } from 'rxjs';
 import { Doctor } from '../../models/doctor';
 import { Patient } from '../../models/patient';
-
+import { Recommendation } from '../../models/recommendation';
 @Injectable({
   providedIn: 'root'
 })
@@ -46,9 +46,14 @@ export class AuthService {
   getDoctorAllPatients(email: string): Observable<Patient[]> {
     return this.http.get<Patient[]>(`${this.apiUrl}/api/doctors/email/${email}`);
   }
-
+  addRecommendation(id:string,recommendation: Recommendation): Observable<Recommendation> {
+    return this.http.post<Recommendation>(`${this.apiUrl}/api/recommendations/${id}`, recommendation);
+  }
+  
   deletePatient(email: string): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/api/patients/${email}`);
 }
+getDoctorByEmail(email: string): Observable<Doctor> {
+  return this.http.get<Doctor>(`${this.apiUrl}/api/get_doctor/${email}`);
 }
-
+}

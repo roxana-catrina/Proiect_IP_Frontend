@@ -35,18 +35,29 @@ export class DashboardDoctorComponent implements OnInit {
   }
 
   private loadDoctorData(email: string) {
-    this.authService.getDoctorAllPatients(email).subscribe({
-      next:  (patients: Patient[]) => {
-        this.allPatients = patients;
-        this.patients = [...patients]; // Copy for filtering
-        console.log('Loaded patients:', this.patients);
+    // First, load doctor details
+    this.authService.getDoctorByEmail(email).subscribe({
+      next: (doctor: Doctor) => {
+        this.doctor = doctor;
+        console.log('Doctor loaded:', this.doctor);
+        
+        // Then load doctor's patients
+        this.authService.getDoctorAllPatients(email).subscribe({
+          next: (patients: Patient[]) => {
+            this.allPatients = patients;
+            this.patients = [...patients];
+            console.log('Loaded patients:', this.patients);
+          },
+          error: (error: any) => {
+            console.error('Error loading patient data:', error);
+          }
+        });
       },
-      error: (error: any) => {
-        console.error('Error loading patient data:', error);
+      error: (error) => {
+        console.error('Error loading doctor data:', error);
       }
     });
   }
-
   searchPatients() {
     if (!this.searchTerm) {
       this.patients = [...this.allPatients];
@@ -83,10 +94,11 @@ export class DashboardDoctorComponent implements OnInit {
   }
 
 
-  viewRecommendations(patientId: string): void {
-    /* console.log('Viewing recommendations for patient:', patientId);
-    this.router.navigate(['/recommendations', patientId]); */
-  }
-  
-}
+  viewRecommendations(patientEmail: string) {
+    this.router.navigate(['/recomendations'], {
+    
+      queryParams: { email: patientEmail, emailDoctor: this.doctor?.email, idDoctor: this.doctor?.id },
+    });
+    console.log("id", this.doctor?.id)
 
+}}
