@@ -27,7 +27,11 @@
           <table class="table table-hover">
             <thead>
               <tr>
-                <th>Nume</th>
+                <th>Nume 
+                  <button class="btn btn-sm" (click)="sort('lastName')">
+                    <i class="bi" [ngClass]="getSortIcon('lastName')"></i>
+                  </button>
+                </th>
                 <th>Prenume</th>
                 <th>CNP</th>
                 <th>Data nașterii</th>
@@ -39,12 +43,12 @@
                 <td>{{ patient.lastName }}</td>
                 <td>{{ patient.firstName }}</td>
                 <td>{{ patient.cnp }}</td>
-                <td>{{ patient.age | date:'dd.MM.yyyy' }}</td>
+                <td>{{ patient.age  }}</td>
                 <td>
                   <div class="btn-group" role="group">
-                    <button class="btn btn-outline-warning btn-sm me-2" (click)="editPatient(patient.cnp)">
+                 <!--  <button class="btn btn-outline-warning btn-sm me-2" (click)="editPatient(patient.cnp)">
                       <i class="bi bi-pencil"></i> Modifică
-                    </button>
+                    </button>--> 
                     <button class="btn btn-outline-danger btn-sm me-2" (click)="deletePatient(patient.email)">
                       <i class="bi bi-trash"></i> Șterge
                     </button>
@@ -63,5 +67,8 @@
       </div>
     </div>
   </div>
+  <button class="btn btn-primary btn-lg" (click)="logout()">
+    <i class="bi bi-file-earmark-medical"></i> Logout
+  </button>
 </div>
 

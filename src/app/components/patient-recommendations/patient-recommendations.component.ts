@@ -25,12 +25,14 @@ export class PatientRecommendationsComponent implements OnInit {
   recommendations: Recommendation[] = [];
   recommendationForm: FormGroup;
   doctorNames: Map<string, string> = new Map();
-  alerts: Alert[] | undefined;
+  alerts: Alert[] = [];
   idDoctor: String| undefined;
   idDoctor1: string | undefined;
   emailDoctor: string | undefined;
   doctor: Doctor  | undefined;
-  doctors: Doctor[] = []
+  doctors: Doctor[] = [];
+  sortColumn: string = '';
+  sortDirection: 'asc' | 'desc' = 'asc';
   constructor(
     private fb: FormBuilder,
     private route: ActivatedRoute,
@@ -48,8 +50,6 @@ export class PatientRecommendationsComponent implements OnInit {
     });
   }
     
-
-
   ngOnInit() {
     this.route.queryParams.subscribe(params => {
       const email = params['email'];
@@ -186,15 +186,61 @@ export class PatientRecommendationsComponent implements OnInit {
     ;
   }
  
+  sort(column: string) {
+    if (this.sortColumn === column) {
+      this.sortDirection = this.sortDirection === 'asc' ? 'desc' : 'asc';
+    } else {
+      this.sortColumn = column;
+      this.sortDirection = 'asc';
+    }
 
-  
+    this.recommendations.sort((a, b) => {
+      let comparison = 0;
+      
+      switch (column) {
+        case 'createdAt':
+          comparison = new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
+          break;
+        case 'doctorId':
+          const doctorA = this.doctorNames.get(a.doctorId) || '';
+          const doctorB = this.doctorNames.get(b.doctorId) || '';
+          comparison = doctorA.localeCompare(doctorB);
+          break;
+        case 'activityType':
+          comparison = a.activityType.localeCompare(b.activityType);
+          break;
+      }
 
+      return this.sortDirection === 'asc' ? comparison : -comparison;
+    });
+  }
+
+  getSortIcon(column: string): string {
+    if (this.sortColumn !== column) {
+      return 'bi-arrow-down-up';
+    }
+    return this.sortDirection === 'asc' ? 'bi-arrow-up' : 'bi-arrow-down';
+  }
 
   editRecommendation(recommendation: Recommendation) {
     this.recommendationForm.patchValue({
       activityType: recommendation.activityType,
       duration: recommendation.duration,
      // description: recommendation.description
+    });
+  }
+
+  sortAlerts(column: string) {
+    if (this.sortColumn === column) {
+      this.sortDirection = this.sortDirection === 'asc' ? 'desc' : 'asc';
+    } else {
+      this.sortColumn = column;
+      this.sortDirection = 'asc';
+    }
+
+    this.alerts?.sort((a, b) => {
+      const comparison = new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime();
+      return this.sortDirection === 'asc' ? comparison : -comparison;
     });
   }
 }

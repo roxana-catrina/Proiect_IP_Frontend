@@ -28,6 +28,8 @@ export class DashboardPatientComponent implements OnInit {
   alerts: Alert[] = [];
   sensors: Sensor[] = [];
 doctors: Doctor[] = [];
+sortColumn: string = '';
+sortDirection: 'asc' | 'desc' = 'asc';
   constructor(private authService: AuthService, private patientService: PatientService,
     private doctorService: DoctorService, private storageService: StorageService,
     private alertService: AlertService,
@@ -141,6 +143,43 @@ private loadAllDoctors() {
       }
     });
   }
+
+  sort(column: string) {
+    if (this.sortColumn === column) {
+      this.sortDirection = this.sortDirection === 'asc' ? 'desc' : 'asc';
+    } else {
+      this.sortColumn = column;
+      this.sortDirection = 'asc';
+    }
+
+    this.recommendations.sort((a, b) => {
+      let comparison = 0;
+      
+      switch (column) {
+        case 'createdAt':
+          comparison = new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
+          break;
+        case 'doctorId':
+          const doctorA = this.doctorNames.get(a.doctorId) || '';
+          const doctorB = this.doctorNames.get(b.doctorId) || '';
+          comparison = doctorA.localeCompare(doctorB);
+          break;
+        case 'activityType':
+          comparison = a.activityType.localeCompare(b.activityType);
+          break;
+      }
+
+      return this.sortDirection === 'asc' ? comparison : -comparison;
+    });
+  }
+
+  getSortIcon(column: string): string {
+    if (this.sortColumn !== column) {
+      return 'bi-arrow-down-up';
+    }
+    return this.sortDirection === 'asc' ? 'bi-arrow-up' : 'bi-arrow-down';
+  }
+
   logout(): void {
     StorageService.logout();
     this.router.navigate(['/home']); // or wherever you want to redirect after logout

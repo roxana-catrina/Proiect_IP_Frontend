@@ -4,7 +4,7 @@ import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } 
 import { DoctorService } from '../../services/doctor/doctor.service';
 import { InregistrareService } from '../../services/inregistrare/inregistrare.service';
 import { Doctor } from '../../models/doctor';
-import { RouterModule, Router } from '@angular/router';
+import { RouterModule, Router, ActivatedRoute } from '@angular/router';
 import { Patient } from '../../models/patient';
 
 @Component({
@@ -22,7 +22,8 @@ export class InregistrareComponent implements OnInit {
     private doctorService: DoctorService,
     private inregistrareService: InregistrareService,
     private fb: FormBuilder,
-    private router: Router
+    private router: Router,
+    private route: ActivatedRoute
   ) {
     this.patientForm = this.fb.group({
       firstName: ['', Validators.required],
@@ -33,7 +34,6 @@ export class InregistrareComponent implements OnInit {
       phone: ['', [Validators.required, Validators.pattern(/^\d{10}$/)]],
       email: ['', [Validators.required, Validators.email]],
       medicalHistory: [''],
-      //doctorId: ['', Validators.required],
       doctorName: ['', Validators.required],
       password: ['', [Validators.required, Validators.minLength(2)]]
     });
@@ -56,40 +56,35 @@ export class InregistrareComponent implements OnInit {
   onSubmit(): void {
     if (this.patientForm.valid) {
       const formData = this.patientForm.value;
-      const selectedDoctorName = formData.nameDoctor; // This gets the selected doctor name from form
 
-      const patientData: Patient = {
-        firstName: formData.firstName,
-        lastName: formData.lastName,
-        cnp: formData.cnp,
-        age: formData.age,
-        address: formData.address,
-        phone: formData.phone,
-        email: formData.email,
-        medicalHistory: formData.medicalHistory,
-        doctorId: "1",
-        password: formData.password,
-      };
-      console.log('Form Data:', {
-        firstName: formData.firstName,
-        lastName: formData.lastName,
-        CNP: formData.cnp,
-        age: formData.age,
-        address: formData.address,
-        phone: formData.phone,
-        email: formData.email,
-        medicalHistory: formData.medicalHistory,
-        doctorName: formData.doctorName
-      });
+      this.route.queryParams.subscribe(params => {
+        const returnUrl = params['returnUrl'] || '/home';
+        const doctorId = params['doctorId'];
 
-      this.inregistrareService.createPatient(patientData, formData.doctorName).subscribe({
-        next: (response) => {
-          console.log('Patient registered successfully:', response);
-          this.router.navigate(['/home']);
-        },
-        error: (error) => {
-          console.error('Error registering patient:', error);
-        }
+        const patientData: Patient = {
+          firstName: formData.firstName,
+          lastName: formData.lastName,
+          cnp: formData.cnp,
+          age: formData.age,
+          address: formData.address,
+          phone: formData.phone,
+          email: formData.email,
+          medicalHistory: formData.medicalHistory,
+          doctorId: doctorId || "1",
+          password: formData.password,
+        };
+
+        console.log('Registering patient with data:', patientData);
+
+        this.inregistrareService.createPatient(patientData, formData.doctorName).subscribe({
+          next: (response) => {
+            console.log('Patient registered successfully:', response);
+            this.router.navigate([returnUrl]);
+          },
+          error: (error) => {
+            console.error('Error registering patient:', error);
+          }
+        });
       });
     } else {
       Object.keys(this.patientForm.controls).forEach(key => {
