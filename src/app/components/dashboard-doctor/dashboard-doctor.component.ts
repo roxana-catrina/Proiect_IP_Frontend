@@ -22,6 +22,9 @@ export class DashboardDoctorComponent implements OnInit {
   allPatients: Patient[] = []; // Store all patients
   patients: Patient[] = []; // Filtered patients
   doctor: Doctor | null = null;
+  sortColumn: string = '';
+  sortDirection: 'asc' | 'desc' = 'asc';
+
   constructor(private authService: AuthService, private patientService: PatientService,
     private doctorService: DoctorService, private storageService: StorageService,
     private alertService: AlertService,
@@ -90,7 +93,12 @@ export class DashboardDoctorComponent implements OnInit {
     }
   }
   addPatient(): void {
-   //   this.router.navigate(['/inregistrare']);
+    this.router.navigate(['/inregistrare'], {
+      queryParams: { 
+        returnUrl: '/doctor',
+        doctorId: this.doctor?.id
+      }
+    });
   }
 
 
@@ -101,4 +109,31 @@ export class DashboardDoctorComponent implements OnInit {
     });
     console.log("id", this.doctor?.id)
 
-}}
+}
+
+logout(): void {
+  StorageService.logout();
+  this.router.navigate(['/home']); // or wherever you want to redirect after logout
+}
+
+  sort(column: string) {
+    if (this.sortColumn === column) {
+      this.sortDirection = this.sortDirection === 'asc' ? 'desc' : 'asc';
+    } else {
+      this.sortColumn = column;
+      this.sortDirection = 'asc';
+    }
+
+    this.patients.sort((a, b) => {
+      const comparison = a.lastName.localeCompare(b.lastName);
+      return this.sortDirection === 'asc' ? comparison : -comparison;
+    });
+  }
+
+  getSortIcon(column: string): string {
+    if (this.sortColumn !== column) {
+      return 'bi-arrow-down-up';
+    }
+    return this.sortDirection === 'asc' ? 'bi-arrow-up' : 'bi-arrow-down';
+  }
+}
