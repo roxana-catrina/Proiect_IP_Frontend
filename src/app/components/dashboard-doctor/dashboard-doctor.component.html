@@ -35,6 +35,7 @@
                 <th>Prenume</th>
                 <th>CNP</th>
                 <th>Data nașterii</th>
+                <th>Vârstă</th>
                 <th>Acțiuni</th>
               </tr>
             </thead>
@@ -43,7 +44,9 @@
                 <td>{{ patient.lastName }}</td>
                 <td>{{ patient.firstName }}</td>
                 <td>{{ patient.cnp }}</td>
-                <td>{{ patient.age  }}</td>
+                <td>{{ patient.dateBirth | date: 'dd/MM/yyyy' }}</td>
+                <td>{{ patient.dateBirth ? calculateAge(patient.dateBirth) : '' }}</td>
+
                 <td>
                   <div class="btn-group" role="group">
                  <!--  <button class="btn btn-outline-warning btn-sm me-2" (click)="editPatient(patient.cnp)">

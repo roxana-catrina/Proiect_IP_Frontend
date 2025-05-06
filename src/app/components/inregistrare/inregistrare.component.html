@@ -50,6 +50,23 @@
                     </div>
                 </div>
 
+                <div class="row mb-3">
+                    <!-- ...existing phone and email fields... -->
+                    
+                    <div class="col-md-6">
+                        <label for="job" class="form-label">Ocupație</label>
+                        <input 
+                            type="text" 
+                            class="form-control" 
+                            id="job" 
+                            formControlName="job" 
+                            placeholder="Ex: Profesor, Inginer, etc.">
+                        <div class="invalid-feedback" *ngIf="patientForm.get('job')?.errors?.['required']">
+                            Vă rugăm să introduceți ocupația
+                        </div>
+                    </div>
+                </div>
+
                 <!-- CNP and Age -->
                 <div class="row mb-3">
                     <div class="col-md-6">
@@ -58,13 +75,18 @@
                                pattern="[0-9]+" minlength="13" maxlength="13">
                         <div class="invalid-feedback">Please enter a valid 13-digit CNP</div>
                     </div>
-                    <div class="col-md-6">
-                        <label for="age" class="form-label required-field">Age</label>
-                        <input type="number" class="form-control" id="age" formControlName="age" min="0" max="120" required>
-                        <div class="invalid-feedback">Please enter a valid age (0-120)</div>
+                             <div class="col-md-6">
+                        <label for="dateBirth" class="form-label required-field">Data nașterii</label>
+                        <input type="date" 
+                               class="form-control" 
+                               id="dateBirth" 
+                               formControlName="dateBirth" 
+                               required
+                               [max]="maxDate">
+                        <div class="invalid-feedback" *ngIf="patientForm.get('dateBirth')?.errors?.['required']">
+                            Vă rugăm să selectați data nașterii
+                        </div>
                     </div>
-                </div>
-
                 <!-- Contact Information -->
                 <div class="mb-3">
                     <label for="address" class="form-label required-field">Address</label>
@@ -115,6 +137,7 @@
                     <button type="submit" class="btn btn-primary btn-lg" [disabled]="!patientForm.valid">
                         Register Patient
                     </button>
+                </div>
                 </div>
             </form>
         </div>
