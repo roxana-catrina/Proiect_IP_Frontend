@@ -10,4 +10,6 @@ export interface Patient {
     medicalHistory?: string;
     doctorId: string;
     password: string;
+   dateBirth?:Date;
+   job?: string;
 }

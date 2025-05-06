@@ -22,10 +22,13 @@
                   <strong>Nume:</strong> {{patient?.firstName}} {{patient?.lastName}}
                 </li>
                 <li class="list-group-item">
-                  <strong>Vârstă:</strong> {{patient?.age}} ani
+                  <strong>Data nasterii:</strong>  {{ patient?.dateBirth | date: 'dd/MM/yyyy' }}
                 </li>
                 <li class="list-group-item">
                   <strong>CNP:</strong> {{patient?.cnp}}
+                </li>
+                <li class="list-group-item">
+                  <strong>Loca de munca:</strong> {{patient?.job}}
                 </li>
               </ul>
             </div>
@@ -93,7 +96,7 @@
                   <tr *ngFor="let activity of recommendations ; let i = index">
                     <td>{{activity.activityType}}</td>
                     <td>{{activity.duration}}</td>
-                    <td>{{activity.createdAt}}</td>
+                    <td>{{activity.createdAt | date: 'dd.MM.yyyy'}}</td>
                   {{getDoctorName(activity.doctorId)}}
                     <td>{{doctorNames.get(activity.doctorId) || 'Loading...'}} </td>
                   </tr>

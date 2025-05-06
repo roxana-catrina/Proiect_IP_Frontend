@@ -17,6 +17,7 @@ import { Patient } from '../../models/patient';
 export class InregistrareComponent implements OnInit {
   doctors: Doctor[] = [];
   patientForm: FormGroup;
+  maxDate: string;
 
   constructor(
     private doctorService: DoctorService,
@@ -25,17 +26,23 @@ export class InregistrareComponent implements OnInit {
     private router: Router,
     private route: ActivatedRoute
   ) {
+    // Set max date to today
+    const today = new Date();
+    this.maxDate = today.toISOString().split('T')[0];
+
     this.patientForm = this.fb.group({
       firstName: ['', Validators.required],
       lastName: ['', Validators.required],
       cnp: ['', [Validators.required, Validators.pattern(/^\d{13}$/)]],
-      age: ['', [Validators.required, Validators.min(0), Validators.max(150)]],
+     // age: ['', [Validators.required, Validators.min(0), Validators.max(150)]],
       address: ['', Validators.required],
       phone: ['', [Validators.required, Validators.pattern(/^\d{10}$/)]],
       email: ['', [Validators.required, Validators.email]],
+      job: ['', Validators.required],
       medicalHistory: [''],
       doctorName: ['', Validators.required],
-      password: ['', [Validators.required, Validators.minLength(2)]]
+      password: ['', [Validators.required, Validators.minLength(2)]],
+      dateBirth: ['', Validators.required]
     });
   }
 
@@ -72,6 +79,7 @@ export class InregistrareComponent implements OnInit {
           medicalHistory: formData.medicalHistory,
           doctorId: doctorId || "1",
           password: formData.password,
+          dateBirth: new Date(formData.dateBirth)
         };
 
         console.log('Registering patient with data:', patientData);

@@ -5,9 +5,11 @@
         <h2 class="mb-2">Recomandări Medicale</h2>
         <p class="mb-0">Pacient: {{patient?.firstName}} {{patient?.lastName}}</p>
         <p class="small">CNP: {{patient?.cnp}}</p>
-        <p class="small">Vârstă: {{patient?.age}} ani</p>
+        <p class="small">Data nașterii: {{patient?.dateBirth | date:'dd.MM.yyyy'}}</p>
+       
         <p class="small">Email: {{patient?.email}}</p>
         <p class="small">Telefon: {{patient?.phone}}</p>
+        <p class="small">Telefon: {{patient?.job}}</p>
       </div>
     </section>
   
@@ -119,7 +121,7 @@
                       <tr *ngFor="let activity of recommendations ; let i = index">
                         <td>{{activity.activityType}}</td>
                         <td>{{activity.duration}}</td>
-                        <td>{{activity.createdAt}}</td>
+                        <td>{{activity.createdAt | date:'dd.MM.yyyy'}}</td>
                       {{getDoctorName(activity.doctorId)}}
                         <td>{{doctorNames.get(activity.doctorId) || 'Loading...'}} </td>
                       </tr>
