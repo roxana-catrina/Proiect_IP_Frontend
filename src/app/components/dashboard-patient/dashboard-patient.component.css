@@ -42,3 +42,19 @@
 .bg-light {
   background-color: #f8f9fa !important;
 }
+
+.pagination {
+  margin-bottom: 0;
+}
+
+.page-link {
+  cursor: pointer;
+}
+
+.page-item.disabled .page-link {
+  cursor: not-allowed;
+}
+
+.form-select {
+  width: auto;
+}

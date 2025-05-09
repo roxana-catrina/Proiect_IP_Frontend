@@ -22,7 +22,11 @@ export class DashboardDoctorComponent implements OnInit {
   allPatients: Patient[] = []; // Store all patients
   patients: Patient[] = []; // Filtered patients
   doctor: Doctor | null = null;
-  sortColumn: string = '';
+  currentPage: number = 1;
+  pageSize: number = 5;
+  totalPages: number = 1;
+  pagedPatients: Patient[] = [];
+  sortColumn: string = 'lastName';
   sortDirection: 'asc' | 'desc' = 'asc';
 
   constructor(private authService: AuthService, private patientService: PatientService,
@@ -55,17 +59,17 @@ export class DashboardDoctorComponent implements OnInit {
 
 
   private loadDoctorData(email: string) {
-    // First, load doctor details
     this.authService.getDoctorByEmail(email).subscribe({
       next: (doctor: Doctor) => {
         this.doctor = doctor;
         console.log('Doctor loaded:', this.doctor);
         
-        // Then load doctor's patients
         this.authService.getDoctorAllPatients(email).subscribe({
           next: (patients: Patient[]) => {
             this.allPatients = patients;
             this.patients = [...patients];
+            this.sortPatients();
+            this.updatePagedPatients();
             console.log('Loaded patients:', this.patients);
           },
           error: (error: any) => {
@@ -78,30 +82,50 @@ export class DashboardDoctorComponent implements OnInit {
       }
     });
   }
+
+  private sortPatients() {
+    this.patients.sort((a, b) => {
+      let comparison = 0;
+      switch (this.sortColumn) {
+        case 'lastName':
+          comparison = a.lastName.localeCompare(b.lastName);
+          break;
+        case 'firstName':
+          comparison = a.firstName.localeCompare(b.firstName);
+          break;
+       
+        
+      }
+      return this.sortDirection === 'asc' ? comparison : -comparison;
+    });
+  }
+
+  private updatePagedPatients() {
+    this.totalPages = Math.ceil(this.patients.length / this.pageSize);
+    const startIndex = (this.currentPage - 1) * this.pageSize;
+    const endIndex = startIndex + this.pageSize;
+    this.pagedPatients = this.patients.slice(startIndex, endIndex);
+  }
+
   searchPatients() {
     if (!this.searchTerm) {
       this.patients = [...this.allPatients];
+      this.updatePagedPatients();
       return;
     }
+  }
 
-    /* this.patients = this.allPatients.filter(patient => 
-      patient.firstName.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
-      patient.lastName.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
-      patient.cnp.includes(this.searchTerm)
-    ); */
-  }
   editPatient(id: string): void {
-   /*  console.log('Editing patient with ID:', id);
-    this.router.navigate(['/edit-patient', id]); */
   }
+
   deletePatient(email: string): void {
     if (confirm('Ești sigur că vrei să ștergi acest pacient?')) {
       this.authService.deletePatient(email).subscribe({
         next: () => {
           console.log('Patient deleted successfully');
-          // Remove patient from local arrays
           this.allPatients = this.allPatients.filter(p => p.email !== email);
           this.patients = this.patients.filter(p => p.email !== email);
+          this.updatePagedPatients();
         },
         error: (error) => {
           console.error('Error deleting patient:', error);
@@ -109,6 +133,7 @@ export class DashboardDoctorComponent implements OnInit {
       });
     }
   }
+
   addPatient(): void {
     this.router.navigate(['/inregistrare'], {
       queryParams: { 
@@ -118,20 +143,17 @@ export class DashboardDoctorComponent implements OnInit {
     });
   }
 
-
   viewRecommendations(patientEmail: string) {
     this.router.navigate(['/recomendations'], {
-    
       queryParams: { email: patientEmail, emailDoctor: this.doctor?.email, idDoctor: this.doctor?.id },
     });
     console.log("id", this.doctor?.id)
+  }
 
-}
-
-logout(): void {
-  StorageService.logout();
-  this.router.navigate(['/home']); // or wherever you want to redirect after logout
-}
+  logout(): void {
+    StorageService.logout();
+    this.router.navigate(['/home']); // or wherever you want to redirect after logout
+  }
 
   sort(column: string) {
     if (this.sortColumn === column) {
@@ -140,11 +162,24 @@ logout(): void {
       this.sortColumn = column;
       this.sortDirection = 'asc';
     }
+    this.sortPatients();
+    this.updatePagedPatients();
+  }
 
-    this.patients.sort((a, b) => {
-      const comparison = a.lastName.localeCompare(b.lastName);
-      return this.sortDirection === 'asc' ? comparison : -comparison;
-    });
+  setPage(page: number) {
+    if (page >= 1 && page <= this.totalPages) {
+      this.currentPage = page;
+      this.updatePagedPatients();
+    }
+  }
+
+  onPageSizeChange() {
+    this.currentPage = 1;
+    this.updatePagedPatients();
+  }
+
+  get pages(): number[] {
+    return Array.from({ length: this.totalPages }, (_, i) => i + 1);
   }
 
   getSortIcon(column: string): string {
