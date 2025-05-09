@@ -88,10 +88,13 @@
                     <div class="invalid-feedback">Introduceți parola</div>
                 </div>
 
-                <div class="mb-3 form-check">
-                    <input type="checkbox" class="form-check-input" id="rememberPatient">
-                    <label class="form-check-label" for="rememberPatient">Ține-mă minte</label>
-                </div>
+                <!--  <div class="mb-3 form-check">
+                    <input type="checkbox" 
+                           class="form-check-input" 
+                           id="rememberPatient" 
+                           formControlName="rememberMe">
+                <label class="form-check-label" for="rememberPatient">Ține-mă minte</label>
+                </div>-->  
 
                 <div class="d-grid gap-2">
                     <button type="submit" [disabled]="!loginForm.valid || isSpinning" >

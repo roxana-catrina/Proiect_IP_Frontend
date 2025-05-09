@@ -16,8 +16,7 @@ import { Doctor } from '../../models/doctor';
   selector: 'app-patient-recommendations',
   templateUrl: './patient-recommendations.component.html',
   styleUrls: ['./patient-recommendations.component.css'],
-  imports: [CommonModule, RouterModule,  ReactiveFormsModule,  // <- IMPORTANT
-    FormsModule],
+  imports: [CommonModule, RouterModule, ReactiveFormsModule, FormsModule],
   standalone: true
 })
 export class PatientRecommendationsComponent implements OnInit {
@@ -26,13 +25,26 @@ export class PatientRecommendationsComponent implements OnInit {
   recommendationForm: FormGroup;
   doctorNames: Map<string, string> = new Map();
   alerts: Alert[] = [];
-  idDoctor: String| undefined;
+  idDoctor: String | undefined;
   idDoctor1: string | undefined;
   emailDoctor: string | undefined;
-  doctor: Doctor  | undefined;
+  doctor: Doctor | undefined;
   doctors: Doctor[] = [];
-  sortColumn: string = '';
-  sortDirection: 'asc' | 'desc' = 'asc';
+  sortColumn: string = 'createdAt';
+  sortDirection: 'asc' | 'desc' = 'desc';
+
+  // Add pagination properties
+  currentPage: number = 1;
+  pageSize: number = 5;
+  totalPages: number = 1;
+  pagedRecommendations: Recommendation[] = [];
+
+  // Add alert pagination properties
+  alertCurrentPage: number = 1;
+  alertPageSize: number = 5;
+  alertTotalPages: number = 1;
+  pagedAlerts: Alert[] = [];
+
   constructor(
     private fb: FormBuilder,
     private route: ActivatedRoute,
@@ -46,16 +58,15 @@ export class PatientRecommendationsComponent implements OnInit {
     this.recommendationForm = this.fb.group({
       activityType: ['', Validators.required],
       duration: ['', [Validators.required]]
-      
     });
   }
-    
+
   ngOnInit() {
     this.route.queryParams.subscribe(params => {
       const email = params['email'];
 
       this.idDoctor1 = params['idDoctor'];
-      console.log('idDoctor1', this.idDoctor1)
+      console.log('idDoctor1', this.idDoctor1);
       this.emailDoctor = params['emailDoctor'];
       if (this.emailDoctor) {
         this.authService.getDoctorByEmail(this.emailDoctor).subscribe({
@@ -72,7 +83,22 @@ export class PatientRecommendationsComponent implements OnInit {
         this.loadAllDoctors();
       }
     });
+    this.initializePagination();
+    this.loadInitialData();
   }
+
+  private initializePagination() {
+    this.updatePagedRecommendations();
+    this.updatePagedAlerts();
+  }
+
+  private loadInitialData() {
+    if (this.patient?.id) {
+      this.loadPatientRecommendations(this.patient.id);
+      this.loadPatientAlerts(this.patient.id);
+    }
+  }
+
   private loadAllDoctors() {
     this.doctorService.getAllDoctors().subscribe({
       next: (doctors: Doctor[]) => {
@@ -97,7 +123,6 @@ export class PatientRecommendationsComponent implements OnInit {
         if (patient.id) {
           this.loadPatientRecommendations(patient.id);
           console.log('Patient data loaded:', this.patient.id);
-         // this.loadPatientSensors(patient.id);
           this.loadAlerts(); // Move loadAlerts here after patient data is loaded
         }
       },
@@ -106,7 +131,8 @@ export class PatientRecommendationsComponent implements OnInit {
       }
     });
   }
- private loadAlerts() {
+
+  private loadAlerts() {
     if (!this.patient?.id) {
       console.error('Cannot load alerts: Patient ID is missing');
       return;
@@ -114,10 +140,11 @@ export class PatientRecommendationsComponent implements OnInit {
 
     this.alertService.getPacientAlerts(this.patient.id).subscribe({
       next: (alerts: Alert[]) => {
-        this.alerts = alerts.sort((a, b) => 
+        this.alerts = alerts.sort((a, b) =>
           new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()
         );
         console.log('Alerts loaded successfully:', this.alerts);
+        this.updatePagedAlerts();
       },
       error: (error) => {
         console.error('Error loading alerts:', error);
@@ -130,28 +157,48 @@ export class PatientRecommendationsComponent implements OnInit {
   }
 
   private loadPatientRecommendations(patientId: string) {
-    this.patientService.getPatientRecommendations(patientId)
-      .subscribe({
-        next: (recommendations) => {
-          console.log('Recommendations loaded:', recommendations);
-          this.recommendations = recommendations;
-        },
-        error: (error) => {
-          console.error('Error loading patient recommendations:', error);
-        }
-      });
+    this.patientService.getPatientRecommendations(patientId).subscribe({
+      next: (recommendations) => {
+        this.recommendations = recommendations;
+        this.sortRecommendationsDesc();
+        this.updatePagedRecommendations();
+      },
+      error: (error) => console.error('Error loading recommendations:', error)
+    });
   }
+
+  private loadPatientAlerts(patientId: string) {
+    this.alertService.getPacientAlerts(patientId).subscribe({
+      next: (alerts) => {
+        this.alerts = alerts;
+        this.sortAlertsDesc();
+        this.updatePagedAlerts();
+      },
+      error: (error) => console.error('Error loading alerts:', error)
+    });
+  }
+
+  private sortRecommendationsDesc() {
+    this.recommendations.sort((a, b) =>
+      new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+    );
+  }
+
+  private sortAlertsDesc() {
+    this.alerts.sort((a, b) =>
+      new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()
+    );
+  }
+
   onSubmit() {
     if (this.recommendationForm.valid && this.patient) {
       const recommendation = {
         ...this.recommendationForm.value,
         patientId: this.patient.id,
-      
-        doctorId: this.idDoctor ,
-        //status: 'NEW',
+        doctorId: this.idDoctor,
         createdAt: new Date()
       };
-      console.log('Patient ID: onsub', this.patient.id)
+      console.log('Patient ID: onsub', this.patient.id);
       console.log('Recommendation:onsub', recommendation);
       if (this.patient.id) {
         console.log('Adding recommendation for patient ID:', this.patient.id);
@@ -167,8 +214,8 @@ export class PatientRecommendationsComponent implements OnInit {
       }
     }
   }
- 
-  getDoctorName(doctorId: string): void  {
+
+  getDoctorName(doctorId: string): void {
     // First check if we already have the name cached
     if (this.doctorNames.has(doctorId)) {
       this.doctorNames.get(doctorId) || 'Doctor necunoscut';
@@ -177,29 +224,26 @@ export class PatientRecommendationsComponent implements OnInit {
     // Find doctor in the loaded doctors array
     const doctor = this.doctors.find(d => d.id === doctorId);
     if (doctor) {
-     // const fullName = `${doctor.name}`;
       this.doctorNames.set(doctorId, doctor.name);
-      
     }
 
     console.log('Doctor not found in list, ID:', doctorId);
-    ;
   }
- 
+
   sort(column: string) {
     if (this.sortColumn === column) {
       this.sortDirection = this.sortDirection === 'asc' ? 'desc' : 'asc';
     } else {
       this.sortColumn = column;
-      this.sortDirection = 'asc';
+      this.sortDirection = 'desc'; // Changed default to desc
     }
 
     this.recommendations.sort((a, b) => {
       let comparison = 0;
-      
+
       switch (column) {
         case 'createdAt':
-          comparison = new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
+          comparison = new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
           break;
         case 'doctorId':
           const doctorA = this.doctorNames.get(a.doctorId) || '';
@@ -211,8 +255,19 @@ export class PatientRecommendationsComponent implements OnInit {
           break;
       }
 
-      return this.sortDirection === 'asc' ? comparison : -comparison;
+      return this.sortDirection === 'desc' ? comparison : -comparison;
     });
+
+    this.updatePagedRecommendations();
+  }
+
+  sortAlerts(column: string) {
+    if (column === 'timestamp') {
+      this.alerts.sort((a, b) =>
+        new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()
+      );
+      this.updatePagedAlerts();
+    }
   }
 
   getSortIcon(column: string): string {
@@ -225,22 +280,53 @@ export class PatientRecommendationsComponent implements OnInit {
   editRecommendation(recommendation: Recommendation) {
     this.recommendationForm.patchValue({
       activityType: recommendation.activityType,
-      duration: recommendation.duration,
-     // description: recommendation.description
+      duration: recommendation.duration
     });
   }
 
-  sortAlerts(column: string) {
-    if (this.sortColumn === column) {
-      this.sortDirection = this.sortDirection === 'asc' ? 'desc' : 'asc';
-    } else {
-      this.sortColumn = column;
-      this.sortDirection = 'asc';
-    }
+  private updatePagedRecommendations() {
+    this.totalPages = Math.ceil(this.recommendations.length / this.pageSize);
+    const startIndex = (this.currentPage - 1) * this.pageSize;
+    const endIndex = startIndex + this.pageSize;
+    this.pagedRecommendations = this.recommendations.slice(startIndex, endIndex);
+  }
 
-    this.alerts?.sort((a, b) => {
-      const comparison = new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime();
-      return this.sortDirection === 'asc' ? comparison : -comparison;
-    });
+  private updatePagedAlerts() {
+    this.alertTotalPages = Math.ceil(this.alerts.length / this.alertPageSize);
+    const startIndex = (this.alertCurrentPage - 1) * this.alertPageSize;
+    const endIndex = startIndex + this.alertPageSize;
+    this.pagedAlerts = this.alerts.slice(startIndex, endIndex);
+  }
+
+  setPage(page: number) {
+    if (page >= 1 && page <= this.totalPages) {
+      this.currentPage = page;
+      this.updatePagedRecommendations();
+    }
+  }
+
+  setAlertPage(page: number) {
+    if (page >= 1 && page <= this.alertTotalPages) {
+      this.alertCurrentPage = page;
+      this.updatePagedAlerts();
+    }
+  }
+
+  onPageSizeChange() {
+    this.currentPage = 1;
+    this.updatePagedRecommendations();
+  }
+
+  onAlertPageSizeChange() {
+    this.alertCurrentPage = 1;
+    this.updatePagedAlerts();
+  }
+
+  get pages(): number[] {
+    return Array.from({ length: this.totalPages }, (_, i) => i + 1);
+  }
+
+  get alertPages(): number[] {
+    return Array.from({ length: this.alertTotalPages }, (_, i) => i + 1);
   }
 }
