@@ -75,8 +75,9 @@ export class DashboardPatientComponent implements OnInit, AfterViewInit, OnDestr
     console.log('ngOnInit called');
     const patient = StorageService.getPatient();
     console.log('Patient from storage:', patient);
-    if (patient && patient.email) {
+    if ( patient.email) {
       this.loadPatientData(patient.email);
+      
       this.initializeEKGChart();
       this.initializeHeartRateChart();
       this.initializeTemperatureChart();
@@ -85,8 +86,8 @@ export class DashboardPatientComponent implements OnInit, AfterViewInit, OnDestr
   }
 
   ngAfterViewInit() {
-    this.loadSensorData(); // Load initial data
-    this.startRealtimeUpdates(); // Start real-time updates
+    //this.loadSensorData(); // Load initial data
+   // this.startRealtimeUpdates(); // Start real-time updates
    // this.loadSensorData(); // Load initial sensor data
   }
 
