@@ -65,10 +65,11 @@ export class DashboardPatientComponent implements OnInit, AfterViewInit, OnDestr
   private humidityData: number[] = Array(50).fill(0);
 
   constructor(private authService: AuthService, private patientService: PatientService,
-    private doctorService: DoctorService, private storageService: StorageService,
+    private doctorService: DoctorService,
     private alertService: AlertService,
     private router: Router,
-    private sensorService: SensorService
+    private sensorService: SensorService,
+    private storageService: StorageService
   ) {}
 
   ngOnInit() {
@@ -302,7 +303,7 @@ export class DashboardPatientComponent implements OnInit, AfterViewInit, OnDestr
   }
 
   logout(): void {
-    StorageService.logout();
+      this.storageService.logout(); // Use the non-static instance method
     this.router.navigate(['/home']); // or wherever you want to redirect after logout
   }
 

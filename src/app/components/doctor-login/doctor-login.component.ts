@@ -63,7 +63,7 @@ export class DoctorLoginComponent implements OnInit {
       this.authService.doctorLogin(this.loginForm.value).subscribe({
         next: (res: any) => {
           if (res.email) {
-            StorageService.saveUser({ email: res.email });
+            StorageService.saveDoctor({ email: res.email });
             StorageService.saveToken(res.jwt);
             this.router.navigate(['/doctor']);
           }
