@@ -30,7 +30,8 @@ export class DashboardDoctorComponent implements OnInit {
   sortDirection: 'asc' | 'desc' = 'asc';
 
   constructor(private authService: AuthService, private patientService: PatientService,
-    private doctorService: DoctorService, private storageService: StorageService,
+    private doctorService: DoctorService, 
+    private storageService: StorageService,
     private alertService: AlertService,
     private router: Router
   ) {}
@@ -151,7 +152,7 @@ export class DashboardDoctorComponent implements OnInit {
   }
 
   logout(): void {
-    StorageService.logout();
+    this.storageService.logout();
     this.router.navigate(['/home']); // or wherever you want to redirect after logout
   }
 

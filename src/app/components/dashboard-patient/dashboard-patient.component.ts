@@ -65,29 +65,42 @@ export class DashboardPatientComponent implements OnInit, AfterViewInit, OnDestr
   private humidityData: number[] = Array(50).fill(0);
 
   constructor(private authService: AuthService, private patientService: PatientService,
-    private doctorService: DoctorService, private storageService: StorageService,
+    private doctorService: DoctorService,
     private alertService: AlertService,
     private router: Router,
-    private sensorService: SensorService
+    private sensorService: SensorService,
+    private storageService: StorageService
   ) {}
 
   ngOnInit() {
     console.log('ngOnInit called');
     const patient = StorageService.getPatient();
     console.log('Patient from storage:', patient);
-    if ( patient.email) {
+
+    
+    if (patient) {
       this.loadPatientData(patient.email);
-      
+       // Wait for DOM to be ready
+    setTimeout(() => {
+      // Initialize charts first
+
       this.initializeEKGChart();
       this.initializeHeartRateChart();
       this.initializeTemperatureChart();
       this.initializeHumidityChart();
+      
+      // Load initial data
+      this.loadSensorData();
+      
+      // Then start real-time updates
+      this.startRealtimeUpdates();
+    }, 500);
     }
   }
 
   ngAfterViewInit() {
-    //this.loadSensorData(); // Load initial data
-   // this.startRealtimeUpdates(); // Start real-time updates
+
+
    // this.loadSensorData(); // Load initial sensor data
   }
 
@@ -293,7 +306,7 @@ export class DashboardPatientComponent implements OnInit, AfterViewInit, OnDestr
   }
 
   logout(): void {
-    StorageService.logout();
+      this.storageService.logout(); // Use the non-static instance method
     this.router.navigate(['/home']); // or wherever you want to redirect after logout
   }
 
@@ -307,8 +320,9 @@ export class DashboardPatientComponent implements OnInit, AfterViewInit, OnDestr
           data: Array(50).fill(0),
           borderColor: color,
           borderWidth: 1.5,
-          tension: 0.4,
-          pointRadius: 0,
+          tension: 0.1,
+          cubicInterpolationMode: 'monotone' as const,
+          pointRadius: 1,
           fill: false
         }]
       },
@@ -380,44 +394,50 @@ export class DashboardPatientComponent implements OnInit, AfterViewInit, OnDestr
     }
   }
 
-  private startRealtimeUpdates() {
-    this.updateSubscription = interval(100).subscribe(() => {
-      if (this.patient?.id) {
-        this.sensorService.getLatestSensorData(this.patient.id).subscribe({
-          next: (sensorData: Sensor) => {
-            if (this.ekgChart && this.heartRateChart && this.temperatureChart && this.humidityChart) {
-              // Update EKG
-              const ekgValue = parseFloat(sensorData.ekgSignal);
-              this.ekgData.shift();
-              this.ekgData.push(ekgValue);
-              this.ekgChart.data.datasets[0].data = this.ekgData;
-              
-              // Update Heart Rate
-              const heartRate = parseFloat(sensorData.heartRate);
-              this.heartRateData.shift();
-              this.heartRateData.push(heartRate);
-              this.heartRateChart.data.datasets[0].data = this.heartRateData;
-              
-              // Update Temperature
-              this.temperatureData.shift();
-              this.temperatureData.push(sensorData.temperature);
-              this.temperatureChart.data.datasets[0].data = this.temperatureData;
-              
-              // Update Humidity
-              this.humidityData.shift();
-              this.humidityData.push(sensorData.humidity);
-              this.humidityChart.data.datasets[0].data = this.humidityData;
-              
-              // Update all charts
-              [this.ekgChart, this.heartRateChart, this.temperatureChart, this.humidityChart]
-                .forEach(chart => chart?.update('none'));
-            }
-          },
-          error: (error) => console.error('Error fetching sensor data:', error)
-        });
-      }
-    });
-  }
+private startRealtimeUpdates() {
+  // Poll every 1 second instead of every 100ms
+  this.updateSubscription = interval(1000).subscribe(() => {
+    if (this.patient?.id) {
+      // Use the endpoint
+      this.sensorService.getLatestSensorData(this.patient.id).subscribe({
+        next: (sensorData: Sensor) => {
+          console.log('New sensor data received:', sensorData);
+          
+          if (this.ekgChart && this.heartRateChart && this.temperatureChart && this.humidityChart) {
+            // Update EKG with new data
+            this.ekgData = [...this.ekgData.slice(1), parseFloat(sensorData.ekgSignal)];
+            this.ekgChart.data.datasets[0].data = [...this.ekgData];
+            
+            // Update Heart Rate with new data
+            this.heartRateData = [...this.heartRateData.slice(1), parseFloat(sensorData.heartRate)];
+            this.heartRateChart.data.datasets[0].data = [...this.heartRateData];
+            
+            // Update Temperature with new data
+            this.temperatureData = [...this.temperatureData.slice(1), sensorData.temperature];
+            this.temperatureChart.data.datasets[0].data = [...this.temperatureData];
+            
+            // Update Humidity with new data
+            this.humidityData = [...this.humidityData.slice(1), sensorData.humidity];
+            this.humidityChart.data.datasets[0].data = [...this.humidityData];
+            
+            // Create timestamp for x-axis
+            const timestamp = new Date().toLocaleTimeString();
+            [this.ekgChart, this.heartRateChart, this.temperatureChart, this.humidityChart].forEach(chart => {
+              if (chart && chart.data) {
+                chart.data.labels = [...(chart.data.labels as string[]).slice(1), timestamp];
+                chart.update('none');
+              }
+            });
+          }
+        },
+        error: (error) => console.error('Error fetching sensor data:', error)
+      });
+    }
+  });
+}
+
+
+
 
   private updateCharts(sensors: Sensor[]) {
     if (!sensors.length) return;
