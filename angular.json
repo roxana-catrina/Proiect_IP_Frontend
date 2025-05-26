@@ -31,11 +31,14 @@
             ],
             "tsConfig": "tsconfig.app.json",
             "assets": [
-              {
-                "glob": "**/*",
-                "input": "public"
-              }
-            ],
+  "src/favicon.ico",
+  "src/assets",
+  {
+    "glob": "**/*",
+    "input": "src/app/images",
+    "output": "/images"
+  }
+],
             "styles": [
               "src/styles.css"
             ],

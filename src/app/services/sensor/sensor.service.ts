@@ -16,13 +16,10 @@ export class SensorService {
   ) {}
 
   getLatestSensorData(patientId: string): Observable<Sensor> {
-    return this.http.get<Sensor>(
-      `${this.apiUrl}/sensors/latest/${patientId}`,
-      this.getAuthHeaders()
-    ).pipe(
-      catchError(this.handleError)
-    );
-  }
+  return this.http.get<Sensor>(`${this.apiUrl}/sensors/${patientId}/latest`);
+}
+
+  
 
   getAllSensorData(patientId: string): Observable<Sensor[]> {
     return this.http.get<Sensor[]>(

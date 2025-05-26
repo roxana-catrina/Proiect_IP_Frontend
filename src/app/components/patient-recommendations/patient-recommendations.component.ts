@@ -11,7 +11,10 @@ import { AlertService } from '../../services/alert/alert.service';
 import { Alert } from '../../models/alert';
 import { CommonModule } from '@angular/common';
 import { Doctor } from '../../models/doctor';
-
+import { Chart } from 'chart.js';
+import { interval, Subscription } from 'rxjs';
+import { Sensor } from '../../models/sensor';
+import { SensorService } from '../../services/sensor/sensor.service';
 @Component({
   selector: 'app-patient-recommendations',
   templateUrl: './patient-recommendations.component.html',
@@ -38,12 +41,28 @@ export class PatientRecommendationsComponent implements OnInit {
   pageSize: number = 5;
   totalPages: number = 1;
   pagedRecommendations: Recommendation[] = [];
+  ekgData: number[] = Array(50).fill(0);
 
   // Add alert pagination properties
   alertCurrentPage: number = 1;
   alertPageSize: number = 5;
   alertTotalPages: number = 1;
   pagedAlerts: Alert[] = [];
+
+
+
+    private ekgChart: Chart | undefined;
+    private updateSubscription: Subscription | undefined;
+  
+    // Add new chart properties
+    private heartRateChart: Chart | undefined;
+    private temperatureChart: Chart | undefined;
+    private humidityChart: Chart | undefined;
+  
+    // Add data arrays for each metric
+    private heartRateData: number[] = Array(50).fill(0);
+    private temperatureData: number[] = Array(50).fill(0);
+    private humidityData: number[] = Array(50).fill(0);
 
   constructor(
     private fb: FormBuilder,
@@ -53,7 +72,8 @@ export class PatientRecommendationsComponent implements OnInit {
     private doctorService: DoctorService,
     private StorageService: StorageService,
     private alertService: AlertService,
-    private patientService: PatientService
+    private patientService: PatientService,
+    private sensorService: SensorService
   ) {
     this.recommendationForm = this.fb.group({
       activityType: ['', Validators.required],
@@ -85,6 +105,10 @@ export class PatientRecommendationsComponent implements OnInit {
     });
     this.initializePagination();
     this.loadInitialData();
+      this.initializeEKGChart();
+      this.initializeHeartRateChart();
+      this.initializeTemperatureChart();
+      this.initializeHumidityChart();
   }
 
   private initializePagination() {
@@ -329,4 +353,162 @@ export class PatientRecommendationsComponent implements OnInit {
   get alertPages(): number[] {
     return Array.from({ length: this.alertTotalPages }, (_, i) => i + 1);
   }
+
+
+
+private initializeChartConfig(label: string, color: string) {
+    return {
+      type: 'line' as const,
+      data: {
+        labels: Array(50).fill(''),
+        datasets: [{
+          label: label,
+          data: Array(50).fill(0),
+          borderColor: color,
+          borderWidth: 1.5,
+          tension: 0.1,
+          cubicInterpolationMode: 'monotone' as const,
+          pointRadius: 1,
+          fill: false
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        animation: {
+          duration: 0
+        },
+        scales: {
+          y: {
+            type: 'linear' as const,
+            display: true,
+            beginAtZero: false,
+            min: 0,
+            max: 100
+          },
+          x: {
+            type: 'category' as const,
+            display: false
+          }
+        },
+        plugins: {
+          legend: {
+            display: false
+          }
+        }
+      }
+    };
+  }
+
+  private initializeEKGChart() {
+    const ctx = document.getElementById('ekg-chart') as HTMLCanvasElement;
+    if (ctx) {
+      const config = this.initializeChartConfig('EKG Signal', 'rgb(255, 99, 132)');
+      config.options.scales.y.min = -2;
+      config.options.scales.y.max = 2;
+      this.ekgChart = new Chart(ctx, config);
+    }
+  }
+
+  private initializeHeartRateChart() {
+    const ctx = document.getElementById('heart-rate-chart') as HTMLCanvasElement;
+    if (ctx) {
+      const config = this.initializeChartConfig('Heart Rate (BPM)', 'rgb(75, 192, 192)');
+      config.options.scales.y.min = 40;
+      config.options.scales.y.max = 120;
+      this.heartRateChart = new Chart(ctx, config);
+    }
+  }
+
+  private initializeTemperatureChart() {
+    const ctx = document.getElementById('temperature-chart') as HTMLCanvasElement;
+    if (ctx) {
+      const config = this.initializeChartConfig('Temperature (°C)', 'rgb(255, 159, 64)');
+      config.options.scales.y.min = 35;
+      config.options.scales.y.max = 42;
+      this.temperatureChart = new Chart(ctx, config);
+    }
+  }
+
+  private initializeHumidityChart() {
+    const ctx = document.getElementById('humidity-chart') as HTMLCanvasElement;
+    if (ctx) {
+      const config = this.initializeChartConfig('Humidity (%)', 'rgb(54, 162, 235)');
+      config.options.scales.y.min = 0;
+      config.options.scales.y.max = 100;
+      this.humidityChart = new Chart(ctx, config);
+    }
+  }
+
+  private startRealtimeUpdates() {
+    this.updateSubscription = interval(100).subscribe(() => {
+      if (this.patient?.id) {
+        this.sensorService.getLatestSensorData(this.patient.id).subscribe({
+          next: (sensorData: Sensor) => {
+            if (this.ekgChart && this.heartRateChart && this.temperatureChart && this.humidityChart) {
+              // Update EKG with new data
+              this.ekgData = [...this.ekgData.slice(1), parseFloat(sensorData.ekgSignal)];
+              this.ekgChart.data.datasets[0].data = [...this.ekgData];
+              
+              // Update Heart Rate with new data
+              this.heartRateData = [...this.heartRateData.slice(1), parseFloat(sensorData.heartRate)];
+              this.heartRateChart.data.datasets[0].data = [...this.heartRateData];
+              
+              // Update Temperature with new data
+              this.temperatureData = [...this.temperatureData.slice(1), sensorData.temperature];
+              this.temperatureChart.data.datasets[0].data = [...this.temperatureData];
+              
+              // Update Humidity with new data
+              this.humidityData = [...this.humidityData.slice(1), sensorData.humidity];
+              this.humidityChart.data.datasets[0].data = [...this.humidityData];
+              
+              // Create timestamps for x-axis
+              const timestamp = new Date().toLocaleTimeString();
+              [this.ekgChart, this.heartRateChart, this.temperatureChart, this.humidityChart].forEach(chart => {
+                if (chart && chart.data) {
+                  chart.data.labels = [...(chart.data.labels as string[]).slice(1), timestamp];
+                  chart.update('none');
+                }
+              });
+            }
+          },
+          error: (error) => console.error('Error fetching sensor data:', error)
+        });
+      }
+    });
+  }
+
+  private updateCharts(sensors: Sensor[]) {
+    if (!sensors.length) return;
+
+    const timestamps = sensors.map(s => new Date(s.timestamp).toLocaleTimeString());
+    const ekgValues = sensors.map(s => parseFloat(s.ekgSignal) || 0);
+    const heartRates = sensors.map(s => parseFloat(s.heartRate) || 0);
+    const temperatures = sensors.map(s => s.temperature || 0);
+    const humidities = sensors.map(s => s.humidity || 0);
+
+    const charts = [
+      { chart: this.ekgChart, data: ekgValues },
+      { chart: this.heartRateChart, data: heartRates },
+      { chart: this.temperatureChart, data: temperatures },
+      { chart: this.humidityChart, data: humidities }
+    ];
+
+    charts.forEach(({ chart, data }) => {
+      if (chart && chart.data) {
+        chart.data.labels = timestamps;
+        chart.data.datasets[0].data = data;
+        try {
+          chart.update();
+        } catch (error) {
+          console.error('Error updating chart:', error);
+        }
+      }
+    });
+  }
+
+ 
+
+
+
 }

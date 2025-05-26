@@ -64,7 +64,7 @@ export class PatientLoginComponent implements OnInit {
       this.authService.patientLogin(this.loginForm.value).subscribe({
         next: (res: any) => {
           if (res.email) {
-            StorageService.saveUser({ email: res.email });
+            StorageService.savePatient({ email: res.email });
             StorageService.saveToken(res.jwt);
             this.loadPatientData(res.email);
           }
