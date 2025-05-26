@@ -77,10 +77,10 @@
   },
           "configurations": {
             "production": {
-              "buildTarget": "Proiect_IP_Frontend:build:production"
+              "browserTarget": "Proiect_IP_Frontend:build:production"
             },
             "development": {
-              "buildTarget": "Proiect_IP_Frontend:build:development"
+              "browserTarget": "Proiect_IP_Frontend:build:development"
             }
           },
           "defaultConfiguration": "development"
@@ -91,10 +91,7 @@
         "test": {
           "builder": "@angular-devkit/build-angular:karma",
           "options": {
-            "polyfills": [
-              "zone.js",
-              "zone.js/testing"
-            ],
+            "polyfills": "zone.js",
             "tsConfig": "tsconfig.spec.json",
             "assets": [
               {
