@@ -1,41 +1,82 @@
+<style>
+  @keyframes heartbeat {
+    0%, 100% {
+      transform: scale(1);
+    }
+    25% {
+      transform: scale(1.08);
+    }
+    50% {
+      transform: scale(0.95);
+    }
+    75% {
+      transform: scale(1.05);
+    }
+  }
+
+  .beating-heart {
+    animation: heartbeat 1.5s infinite;
+    transform-origin: center;
+  }
+
+  /* Adaugă padding-top pentru a nu ascunde conținutul sub navbar */
+  body {
+    padding-top: 70px; /* Ajustează după înălțimea navbar-ului */
+  }
+</style>
+
 <nav class="navbar navbar-expand-lg navbar-dark bg-primary sticky-top">
-    <div class="container">
-        <a class="navbar-brand" routerLink="/inregistrare">
-            <i class="bi bi-rocket me-2"></i>Contul meu 
-        </a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-            <span class="navbar-toggler-icon"></span>
+  <div class="container">
+
+    <!-- Logo + Text -->
+    <a class="navbar-brand d-flex align-items-center" routerLink="/home">
+      <!-- SVG Inimă -->
+      <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="#fff" class="me-2 beating-heart" viewBox="0 0 24 24">
+        <path d="M12 21s-6.716-5.548-9.5-9.25C.5 8.5 3 4 7 4a5 5 0 0 1 5 5 5 5 0 0 1 5-5c4 0 6.5 4.5 4.5 7.75C18.716 15.452 12 21 12 21z"/>
+        <circle cx="12" cy="9" r="1" fill="#fff"/>
+      </svg>
+      <span class="fw-bold fs-5">Vitalium</span>
+    </a>
+
+    <!-- Buton mobil -->
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <!-- Meniu -->
+    <div class="collapse navbar-collapse justify-content-between" id="navbarNav">
+
+      <!-- Căutare în centru -->
+      <form class="d-flex mx-auto" (ngSubmit)="onSearch($event)">
+        <input 
+          class="form-control me-2" 
+          type="search" 
+          [(ngModel)]="searchTerm"
+          name="search"
+          placeholder="Caută în pagină..."
+          (input)="onSearchInput()"
+          aria-label="Search">
+        <button class="btn btn-outline-light" type="submit" aria-label="Submit search">
+          <i class="bi bi-search"></i>
         </button>
-        <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav me-auto">
-                <li class="nav-item">
-                    <a class="nav-link active" routerLink="/home">Acasă</a>
-                </li>
-            
-               <!--   <li class="nav-item">
-                    <a class="nav-link"  >  Despre noi</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" >Contact</a>
-                </li>--> 
-            </ul>
-            <form class="d-flex" (ngSubmit)="onSearch($event)">
-                <input 
-                    class="form-control me-2" 
-                    type="search" 
-                    [(ngModel)]="searchTerm"
-                    name="search"
-                    placeholder="Caută în pagină..."
-                    (input)="onSearchInput()">
-                <button class="btn btn-outline-light" type="submit">
-                    <i class="bi bi-search"></i>
-                </button>
-                
-            </form>
-        </div>
+      </form>
+
+      <!-- Butoane Acasă + Contul meu -->
+      <div class="d-flex align-items-center gap-3 mt-3 mt-lg-0">
+
+        <!-- Acasă -->
+        <a class="text-white text-decoration-none d-flex align-items-center fs-5" routerLink="/home">
+          <i class="bi bi-house fs-4 me-2"></i>
+          <span>Acasă</span>
+        </a>
+
+        <!-- Contul meu -->
+        <a routerLink="/inregistrare" class="text-white text-decoration-none d-flex align-items-center fs-5">
+          <i class="bi bi-person-circle fs-4 me-2"></i>
+          <span>Contul meu</span>
+        </a>
+
+      </div>
     </div>
+  </div>
 </nav>
-
-
-
-

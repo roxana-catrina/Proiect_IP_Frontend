@@ -1,29 +1,80 @@
-<!-- Footer -->
-<footer class="bg-dark text-white py-4 mt-5">
-    <div class="container">
-        <div class="row">
-            <div class="col-md-4">
-                <h5>Despre noi</h5>
-                <p>O companie inovatoare dedicată creării de soluții software de calitate.</p>
-            </div>
-            <div class="col-md-4">
-                <h5>Link-uri rapide</h5>
-                <ul class="list-unstyled">
-                    <li><a href="#" class="text-white">Acasă</a></li>
-                    <li><a href="#" class="text-white">Servicii</a></li>
-                    <li><a href="#" class="text-white">Contact</a></li>
-                </ul>
-            </div>
-            <div class="col-md-4">
-                <h5>Contact</h5>
-                <p><i class="bi bi-envelope me-2"></i> contac</p>
-                <p><i class="bi bi-phone me-2"></i> +40 123 456 789</p>
-            </div>
-        </div>
-        <hr>
-        <div class="text-center">
-            <p class="mb-0">© 2023 Aplicația Mea. Toate drepturile rezervate.</p>
-        </div>
-    </div>
-</footer>
+<style>
+  .bg-custom-light {
+    background-color: #e3ecf5;
+  }
 
+  .contact-inline p {
+    margin: 0 1.5rem;
+    display: flex;
+    align-items: center;
+  }
+
+  @media (max-width: 768px) {
+    .contact-inline {
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .contact-inline p {
+      margin: 0;
+    }
+  }
+</style>
+
+<!-- Footer -->
+<footer class="bg-custom-light text-dark py-5 mt-5">
+  <div class="container text-center">
+    
+    <!-- Despre noi -->
+    <div class="mb-4">
+      <h5 class="mb-3">Despre noi</h5>
+      <p>Echipa Vitalium este formată din specialiști pasionați care combină expertiza tehnologică cu o viziune clară asupra nevoilor din domeniul medical. Cu o structură bine definită și competențe diverse, ne concentrăm pe crearea unor soluții inteligente, sigure și ușor de utilizat. Echipa noastră este formată din patru module: </p>
+
+      <div class="row justify-content-center">
+        <div class="col-6 col-md-3 mb-3">
+          <h6 class="text-primary">Web</h6>
+          <ul class="list-unstyled small">
+            <li>- Catrina Elena-Roxana</li>
+            <li>- Cioanca-Cloșcă Ionela</li>
+          </ul>
+        </div>
+        <div class="col-6 col-md-3 mb-3">
+          <h6 class="text-primary">Mobile</h6>
+          <ul class="list-unstyled small">
+            <li>- Chițon Roberta</li>
+            <li>- Branc Oana</li>
+          </ul>
+        </div>
+        <div class="col-6 col-md-3 mb-3">
+          <h6 class="text-primary">Embedded</h6>
+          <ul class="list-unstyled small">
+            <li>- Cioveie David</li>
+            <li>- Ciceu Claudiu</li>
+            <li>- Busuioc Nichita</li>
+          </ul>
+        </div>
+        <div class="col-6 col-md-3 mb-3">
+          <h6 class="text-primary">Cloud</h6>
+          <ul class="list-unstyled small">
+            <li>- Cherteș Alexandru</li>
+            <li>- Ciorogariu Laura</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- Contact pe o linie -->
+    <div class="mb-4">
+      <h5 class="mb-3">Contact</h5>
+      <div class="d-flex justify-content-center flex-wrap contact-inline">
+        <p><i class="bi bi-envelope me-2"></i>contact&#64;vitalium.ro</p>
+        <p><i class="bi bi-phone me-2"></i>+40 312 345 689</p>
+        <p><i class="bi bi-geo-alt me-2"></i>Bulevardul Vasile Pârvan, nr. 2, Timișoara</p>
+      </div>
+    </div>
+
+    <!-- Copyright -->
+    <hr class="border-dark">
+    <p class="small mb-0">© 2025 Vitalium. Toate drepturile rezervate.</p>
+  </div>
+</footer>
