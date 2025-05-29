@@ -1,152 +1,171 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ro">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Patient Registration</title>
-    <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <style>
-        .form-container {
-            max-width: 800px;
-            margin: 30px auto;
-            padding: 30px;
-            background-color: #f8f9fa;
-            border-radius: 10px;
-            box-shadow: 0 0 15px rgba(0,0,0,0.1);
-        }
-        .form-title {
-            color: #0d6efd;
-            text-align: center;
-            margin-bottom: 25px;
-        }
-        .required-field::after {
-            content: " *";
-            color: red;
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Înregistrare Pacient</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <style>
+    body, html {
+    margin: 0;
+    padding: 0;
+    font-family: 'Poppins', sans-serif;
+    background-color: #f9fdff;
+    }
+
+    .container {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+    }
+
+    .form-container {
+      max-width: 850px;
+      margin: 50px auto;
+      padding: 40px;
+      background-color: white;
+      border-radius: 15px;
+      box-shadow: 0 0 25px rgba(0, 0, 0, 0.1);
+      margin-top: 0;
+      margin-bottom: 0;
+    }
+    .form-title {
+      text-align: center;
+      margin-bottom: 30px;
+      color: #0d6efd;
+    }
+    .required-field::after {
+      content: " *";
+      color: red;
+    }
+    .invalid-feedback.d-block {
+      display: block;
+    }
+  </style>
 </head>
 <body>
-    <div class="container">
-        <div class="form-container">
-            <h2 class="form-title">Patient Registration Form</h2>
-            <form [formGroup]="patientForm" (ngSubmit)="onSubmit()" class="needs-validation">
-                
-                <!-- Personal Information -->
-                <div class="row mb-3">
-                    <div class="col-md-6">
-                        <label for="firstName" class="form-label required-field">First Name</label>
-                        <input type="text" class="form-control" id="firstName" formControlName="firstName">
-                        <div class="invalid-feedback" *ngIf="patientForm.get('firstName')?.errors?.['required']">
-                            Please enter first name
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <label for="lastName" class="form-label required-field">Last Name</label>
-                        <input type="text" class="form-control" id="lastName" formControlName="lastName">
-                        <div class="invalid-feedback" *ngIf="patientForm.get('lastName')?.errors?.['required']">
-                            Please enter last name
-                        </div>
-                    </div>
-                </div>
+     <div style="height: 38px;"></div>
+  <div class="container">
+    <div class="form-container">
+      <h2 class="form-title">Înregistrare pacient</h2>
+      <form [formGroup]="patientForm" (ngSubmit)="onSubmit()" novalidate>
 
-                <div class="row mb-3">
-                    <!-- ...existing phone and email fields... -->
-                    
-                    <div class="col-md-6">
-                        <label for="job" class="form-label">Ocupație</label>
-                        <input 
-                            type="text" 
-                            class="form-control" 
-                            id="job" 
-                            formControlName="job" 
-                            placeholder="Ex: Profesor, Inginer, etc.">
-                        <div class="invalid-feedback" *ngIf="patientForm.get('job')?.errors?.['required']">
-                            Vă rugăm să introduceți ocupația
-                        </div>
-                    </div>
-                </div>
-
-                <!-- CNP and Age -->
-                <div class="row mb-3">
-                    <div class="col-md-6">
-                        <label for="cnp" class="form-label required-field">CNP</label>
-                        <input type="text" class="form-control" id="cnp" formControlName="cnp" required
-                               pattern="[0-9]+" minlength="13" maxlength="13">
-                        <div class="invalid-feedback">Please enter a valid 13-digit CNP</div>
-                    </div>
-                             <div class="col-md-6">
-                        <label for="dateBirth" class="form-label required-field">Data nașterii</label>
-                        <input type="date" 
-                               class="form-control" 
-                               id="dateBirth" 
-                               formControlName="dateBirth" 
-                               required
-                               [max]="maxDate">
-                        <div class="invalid-feedback" *ngIf="patientForm.get('dateBirth')?.errors?.['required']">
-                            Vă rugăm să selectați data nașterii
-                        </div>
-                    </div>
-                <!-- Contact Information -->
-                <div class="mb-3">
-                    <label for="address" class="form-label required-field">Address</label>
-                    <input type="text" class="form-control" id="address" formControlName="address" required>
-                    <div class="invalid-feedback">Please enter address</div>
-                </div>
-
-                <div class="row mb-3">
-                    <div class="col-md-6">
-                        <label for="phone" class="form-label required-field">Phone</label>
-                        <input type="tel" class="form-control" id="phone"formControlName="phone" required>
-                        <div class="invalid-feedback">Please enter phone number</div>
-                    </div>
-                    <div class="col-md-6">
-                        <label for="email" class="form-label required-field">Email</label>
-                        <input type="email" class="form-control" id="email" formControlName="email" required>
-                        <div class="invalid-feedback">Please enter a valid email</div>
-                    </div>
-                </div>
-
-                <!-- Medical Information -->
-                <div class="mb-3">
-                    <label for="medicalHistory" class="form-label">Medical History</label>
-                    <textarea class="form-control" id="medicalHistory" formControlName="medicalHistory" rows="3"></textarea>
-                </div>
-
-                <div class="row mb-3">
-                    <label for="password" class="form-label required-field">Password  (minim 6 caractere)</label>
-                    <input type="password" class="form-control" id="password" formControlName="password" required minlength="6">
-                    
-                </div>
-
-                <!-- Doctor Selection -->
-                <div class="mb-3">
-                    <label for="doctorId" class="form-label required-field">Select Doctor</label>
-                    <select class="form-select" id="doctorId" formControlName="doctorName">
-                        <option value="">Choose a doctor...</option>
-                        <option *ngFor="let doctor of doctors" [value]="doctor.name">
-                           {{doctor.name}} 
-                        </option>
-                    </select>
-                    <div class="invalid-feedback" *ngIf="patientForm.get('doctorName')?.errors?.['required']">
-                        Please select a doctor
-                    </div>
-                </div>
-
-                <div class="d-grid gap-2 mt-4">
-                    <button type="submit" class="btn btn-primary btn-lg" [disabled]="!patientForm.valid">
-                        Register Patient
-                    </button>
-                </div>
-                </div>
-            </form>
+        <div class="row mb-3">
+          <div class="col-md-6">
+            <label for="firstName" class="form-label required-field">Prenume</label>
+            <input type="text" class="form-control" id="firstName" formControlName="firstName" />
+            <div class="invalid-feedback d-block" *ngIf="submitted && patientForm.get('firstName')?.errors?.['required']">
+              Vă rugăm să introduceți prenumele.
+            </div>
+          </div>
+          <div class="col-md-6">
+            <label for="lastName" class="form-label required-field">Nume</label>
+            <input type="text" class="form-control" id="lastName" formControlName="lastName" />
+            <div class="invalid-feedback d-block" *ngIf="submitted && patientForm.get('lastName')?.errors?.['required']">
+              Vă rugăm să introduceți numele.
+            </div>
+          </div>
         </div>
-    </div>
 
-    <!-- Bootstrap JS Bundle with Popper -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    
-    <!-- Form Validation Script -->
-    
+        <div class="row mb-3">
+          <div class="col-md-6">
+            <label for="job" class="form-label required-field">Ocupație</label>
+            <input type="text" class="form-control" id="job" formControlName="job" />
+            <div class="invalid-feedback d-block" *ngIf="submitted && patientForm.get('job')?.errors?.['required']">
+              Vă rugăm să introduceți ocupația.
+            </div>
+          </div>
+          <div class="col-md-6">
+            <label for="cnp" class="form-label required-field">CNP</label>
+            <input type="text" class="form-control" id="cnp" formControlName="cnp" maxlength="13" />
+            <div class="invalid-feedback d-block" *ngIf="submitted && patientForm.get('cnp')?.errors?.['required']">
+              CNP-ul este obligatoriu.
+            </div>
+            <div class="invalid-feedback d-block" *ngIf="submitted && patientForm.get('cnp')?.errors?.['pattern']">
+              CNP-ul trebuie să conțină exact 13 cifre.
+            </div>
+            <div class="invalid-feedback d-block" *ngIf="submitted && patientForm.get('cnp')?.errors?.['invalidCNP']">
+              CNP-ul introdus nu este valid.
+            </div>
+          </div>
+        </div>
+
+        <div class="row mb-3">
+          <div class="col-md-6">
+            <label for="dateBirth" class="form-label required-field">Data nașterii</label>
+            <input type="date" class="form-control" id="dateBirth" formControlName="dateBirth" [max]="maxDate" />
+            <div class="invalid-feedback d-block" *ngIf="submitted && patientForm.get('dateBirth')?.errors?.['required']">
+              Vă rugăm să selectați data nașterii.
+            </div>
+          </div>
+          <div class="col-md-6">
+            <label for="phone" class="form-label required-field">Telefon</label>
+            <input type="tel" class="form-control" id="phone" formControlName="phone" />
+            <div class="invalid-feedback d-block" *ngIf="submitted && patientForm.get('phone')?.errors?.['required']">
+              Vă rugăm să introduceți numărul de telefon.
+            </div>
+            <div class="invalid-feedback d-block" *ngIf="submitted && patientForm.get('phone')?.errors?.['pattern']">
+              Număr de telefon invalid.
+            </div>
+          </div>
+        </div>
+
+        <div class="row mb-3">
+          <div class="col-md-6">
+            <label for="email" class="form-label required-field">E-mail</label>
+            <input type="email" class="form-control" id="email" formControlName="email" />
+            <div class="invalid-feedback d-block" *ngIf="submitted && patientForm.get('email')?.errors?.['required']">
+              Vă rugăm să introduceți adresa de email.
+            </div>
+            <div class="invalid-feedback d-block" *ngIf="submitted && patientForm.get('email')?.errors?.['email']">
+              Format email invalid.
+            </div>
+          </div>
+          <div class="col-md-6">
+            <label for="password" class="form-label required-field">Parola</label>
+            <input type="password" class="form-control" id="password" formControlName="password" minlength="6" />
+            <div class="invalid-feedback d-block" *ngIf="submitted && patientForm.get('password')?.errors?.['required']">
+              Introduceți o parolă.
+            </div>
+            <div class="invalid-feedback d-block" *ngIf="submitted && patientForm.get('password')?.errors?.['minlength']">
+              Parola trebuie să aibă minim 6 caractere.
+            </div>
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label for="address" class="form-label required-field">Adresa</label>
+          <input type="text" class="form-control" id="address" formControlName="address" />
+          <div class="invalid-feedback d-block" *ngIf="submitted && patientForm.get('address')?.errors?.['required']">
+            Introduceți adresa completă.
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label for="medicalHistory" class="form-label">Istoric medical</label>
+          <textarea class="form-control" id="medicalHistory" formControlName="medicalHistory" rows="3"></textarea>
+        </div>
+
+        <div class="mb-3">
+          <label for="doctorId" class="form-label required-field">Selectează un medic</label>
+          <select class="form-select" id="doctorId" formControlName="doctorName">
+            <option value="">Selectează medicul...</option>
+            <option *ngFor="let doctor of doctors" [value]="doctor.name">{{ doctor.name }}</option>
+          </select>
+          <div class="invalid-feedback d-block" *ngIf="submitted && patientForm.get('doctorName')?.errors?.['required']">
+            Selectați un medic din listă.
+          </div>
+        </div>
+
+        <div class="d-grid gap-2 mt-4">
+          <button type="submit" class="btn btn-primary btn-lg">
+            Înregistrare
+          </button>
+        </div>
+
+      </form>
+    </div>
+  </div>
+   <div style="height: 38px;"></div>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

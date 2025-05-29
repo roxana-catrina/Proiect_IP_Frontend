@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "Proiect_IP_Frontend": {
+    "proiect-ip-frontend": { 
       "projectType": "application",
       "schematics": {
         "@schematics/angular:component": {
@@ -21,33 +21,26 @@
       "prefix": "app",
       "architect": {
         "build": {
-          "builder": "@angular-devkit/build-angular:application",
+          "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "outputPath": "dist/proiect-ip-frontend",
+            "outputPath": "dist/proiect-ip-frontend", 
             "index": "src/index.html",
-            "browser": "src/main.ts",
-            "polyfills": [
-              "zone.js"
-            ],
+            "main": "src/main.ts",
+            
             "tsConfig": "tsconfig.app.json",
             "assets": [
-  "src/favicon.ico",
-  "src/assets",
-  {
-    "glob": "**/*",
-    "input": "src/app/images",
-    "output": "/images"
-  }
-],
+              "src/favicon.ico",
+              "src/assets",
+              {
+                "glob": "**/*",
+                "input": "src/app/images",
+                "output": "/images"
+              }
+            ],
             "styles": [
               "src/styles.css"
             ],
-            "scripts": [],
-            "server": "src/main.server.ts",
-            "outputMode": "server",
-            "ssr": {
-              "entry": "src/server.ts"
-            }
+            "scripts": []
           },
           "configurations": {
             "production": {
@@ -76,14 +69,14 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-    "proxyConfig": "proxy.conf.json"
-  },
+            "proxyConfig": "proxy.conf.json"
+          },
           "configurations": {
             "production": {
-              "browserTarget": "Proiect_IP_Frontend:build:production"
+              "buildTarget": "proiect-ip-frontend:build:production" 
             },
             "development": {
-              "browserTarget": "Proiect_IP_Frontend:build:development"
+              "buildTarget": "proiect-ip-frontend:build:development" 
             }
           },
           "defaultConfiguration": "development"
@@ -94,7 +87,7 @@
         "test": {
           "builder": "@angular-devkit/build-angular:karma",
           "options": {
-            "polyfills": "zone.js",
+           
             "tsConfig": "tsconfig.spec.json",
             "assets": [
               {
@@ -103,9 +96,12 @@
               }
             ],
             "styles": [
+              "node_modules/bootstrap/dist/css/bootstrap.min.css",
               "src/styles.css"
             ],
-            "scripts": []
+            "scripts": [
+              "node_modules/zone.js/dist/zone.min.js"
+            ]
           }
         }
       }

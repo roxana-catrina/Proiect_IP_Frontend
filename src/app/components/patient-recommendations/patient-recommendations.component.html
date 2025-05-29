@@ -1,158 +1,157 @@
-<div class="container-fluid">
-    <!-- Header Section -->
-    <section class="header-section bg-info text-white py-4 mb-4 rounded">
-      <div class="container">
-        <h2 class="mb-2">Informații</h2>
-      
-      </div>
-    </section>
-    <div class="card shadow-sm mb-4">
-      <div class="card-header bg-light">
-        
-       
-        <h5 class="mb-0">Informații Personale</h5>
-      </div>
-      <div class="card-body">
-        <div class="row">
-          <div class="col-md-6">
-            <ul class="list-group list-group-flush">
-              <li class="list-group-item">
-                <strong>Nume:</strong> {{patient?.firstName}} {{patient?.lastName}}
-              </li>
-              <li class="list-group-item">
-                <strong>Data nasterii:</strong>  {{ patient?.dateBirth | date: 'dd/MM/yyyy' }}
-              </li>
-              <li class="list-group-item">
-                <strong>CNP:</strong> {{patient?.cnp}}
-              </li>
-              <li class="list-group-item">
-                <strong>Loca de munca:</strong> {{patient?.job}}
-              </li>
-            </ul>
-          </div>
-          <div class="col-md-6">
-            <ul class="list-group list-group-flush">
-              <li class="list-group-item">
-                <strong>Email:</strong> {{patient?.email}}
-              </li>
-              <li class="list-group-item">
-                <strong>Telefon:</strong> {{patient?.phone}}
-              </li>
-              <li class="list-group-item">
-                <strong>Adresă:</strong> {{patient?.address}}
-              </li>
-            </ul>
-          </div>
+<div class="container-fluid py-4">
+  <section class="header-section text-white py-4 mb-5 rounded" style="background-color: #0d6efd;">
+  <div class="container">
+    <h2 class="mb-0 fw-bold">Informații despre pacient</h2>
+  </div>
+  </section>
+
+
+  <!-- Informații Personale -->
+  <div class="card shadow-sm mb-5 hover-expand px-3">
+    <div class="card-header bg-light">
+      <h5 class="mb-0">Informații Personale</h5>
+    </div>
+    <div class="card-body">
+      <div class="row g-4">
+        <div class="col-md-6">
+          <ul class="list-group list-group-flush">
+            <li class="list-group-item"><strong>Nume:</strong> {{patient?.firstName}} {{patient?.lastName}}</li>
+            <li class="list-group-item"><strong>Data nașterii:</strong> {{patient?.dateBirth | date: 'dd/MM/yyyy'}}</li>
+            <li class="list-group-item"><strong>CNP:</strong> {{patient?.cnp}}</li>
+            <li class="list-group-item"><strong>Locație de muncă:</strong> {{patient?.job}}</li>
+          </ul>
+        </div>
+        <div class="col-md-6">
+          <ul class="list-group list-group-flush">
+            <li class="list-group-item"><strong>Email:</strong> {{patient?.email}}</li>
+            <li class="list-group-item"><strong>Telefon:</strong> {{patient?.phone}}</li>
+            <li class="list-group-item"><strong>Adresă:</strong> {{patient?.address}}</li>
+          </ul>
         </div>
       </div>
     </div>
-   
-  
-    <div class="container">
-      <!-- Add New Recommendation Form -->
-      <div class="card mb-4">
-        <div class="card-header bg-light">
-          <h5 class="mb-0">Adaugă Recomandare Nouă</h5>
+  </div>
+
+  <!-- Formular Adaugă Recomandare -->
+  <div class="card shadow-sm mb-5 hover-expand px-3">
+    <div class="card-header bg-light">
+      <h5 class="mb-0">Adaugă Recomandare Nouă</h5>
+    </div>
+    <div class="card-body">
+      <form [formGroup]="recommendationForm" (ngSubmit)="onSubmit()" novalidate>
+        <div class="mb-3">
+          <label for="activityType" class="form-label fw-semibold">Tip Activitate</label>
+          <input
+            type="text"
+            id="activityType"
+            class="form-control"
+            formControlName="activityType"
+            placeholder="Ex: Exerciții fizice, Dietă, Medicamente"
+            required
+          />
         </div>
-        <div class="card-body">
-          <form [formGroup]="recommendationForm" (ngSubmit)="onSubmit()">
-            <div class="mb-3">
-              <label class="form-label">Tip Activitate</label>
-              <input type="text" class="form-control" formControlName="activityType" placeholder="Ex: Exerciții fizice, Dietă, Medicamente" required>
-            </div>
-            
-        
-            
-            <div class="mb-3">
-              <label class="form-label">Durată (minute)</label>
-              <textarea class="form-control"  formControlName="duration"></textarea>
-            </div>
-  
-            <button type="submit" class="btn btn-primary">
-              Adaugă Recomandare
-            </button>
-         </form>
+
+        <div class="mb-3">
+          <label for="duration" class="form-label fw-semibold">Durată (minute)</label>
+          <textarea
+            id="duration"
+            rows="2"
+            class="form-control"
+            formControlName="duration"
+            placeholder="Introduceți durata recomandată"
+          ></textarea>
+        </div>
+
+        <button type="submit" class="btn btn-primary">
+          <i class="bi bi-plus-lg me-1"></i> Adaugă Recomandare
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Istoric Recomandări -->
+  <div class="card shadow-sm mb-5 hover-expand px-3">
+    <div class="card-header bg-light d-flex justify-content-between align-items-center">
+      <h5 class="mb-0">Istoric Recomandări</h5>
+      <!-- Poți adăuga aici un buton sau altceva dacă dorești -->
+    </div>
+    <div class="card-body">
+      <div *ngIf="recommendations.length > 0; else noActivities">
+        <div class="table-responsive">
+          <table class="table table-hover align-middle">
+            <thead class="table-light">
+              <tr>
+                <th>Tip Activitate</th>
+                <th>Durată</th>
+                <th>
+                  Data
+                  <button class="btn btn-sm btn-link p-0 ms-2" (click)="sort('createdAt')" aria-label="Sortează după dată">
+                    <i class="bi" [ngClass]="getSortIcon('createdAt')"></i>
+                  </button>
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let activity of pagedRecommendations">
+                <td>{{activity.activityType}}</td>
+                <td>{{activity.duration}}</td>
+                <td>{{activity.createdAt | date: 'dd.MM.yyyy'}}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Pagination Controls -->
+        <div class="d-flex justify-content-between align-items-center mt-3">
+          <div class="d-flex align-items-center">
+            <label for="pageSize" class="me-2 mb-0">Elemente per pagină:</label>
+            <select id="pageSize" class="form-select form-select-sm" [(ngModel)]="pageSize" (change)="onPageSizeChange()" style="width: auto;">
+              <option [ngValue]="5">5</option>
+              <option [ngValue]="10">10</option>
+              <option [ngValue]="20">20</option>
+            </select>
+          </div>
+          <nav aria-label="Pagination recomandări">
+            <ul class="pagination pagination-sm mb-0">
+              <li class="page-item" [class.disabled]="currentPage === 1">
+                <a class="page-link" (click)="setPage(currentPage - 1)" tabindex="-1">Anterior</a>
+              </li>
+              <li
+                class="page-item"
+                *ngFor="let page of pages"
+                [class.active]="page === currentPage"
+              >
+                <a class="page-link" (click)="setPage(page)">{{page}}</a>
+              </li>
+              <li class="page-item" [class.disabled]="currentPage === totalPages">
+                <a class="page-link" (click)="setPage(currentPage + 1)">Următor</a>
+              </li>
+            </ul>
+          </nav>
         </div>
       </div>
-           <!-- Istoric activități     AICI TRB SA PUN NUMELE DOCTORULUI NU ID UL DAR MOMENTAN  MI E LENE -->
-           <div class="card shadow-sm mb-4">
-            <div class="card-header bg-light">
-              <h5 class="mb-0">Istoric Recomandari</h5>
-            </div>
-            <div class="card-body">
-              <div *ngIf="recommendations.length > 0; else noActivities">
-                <div class="table-responsive">
-                  <table class="table">
-                    <thead>
-                      <tr>
-                        <th>Tip Activitate</th>
-                        <th>Durată</th>
-                        <th>Data
-                          <button class="btn btn-sm" (click)="sort('createdAt')">
-                            <i class="bi" [ngClass]="getSortIcon('createdAt')"></i>
-                          </button>
-                        </th>
-                    
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr *ngFor="let activity of pagedRecommendations">
-                        <td>{{activity.activityType}}</td>
-                        <td>{{activity.duration}}</td>
-                        <td>{{activity.createdAt | date: 'dd.MM.yyyy'}}</td>
-                       
-                      </tr>
-                    </tbody>
-                  </table>
-                  
-                  <!-- Pagination Controls -->
-                  <div class="d-flex justify-content-between align-items-center mt-3">
-                    <div class="d-flex align-items-center">
-                      <select class="form-select me-2" [(ngModel)]="pageSize" (change)="onPageSizeChange()">
-                        <option [ngValue]="5">5 per pagină</option>
-                        <option [ngValue]="10">10 per pagină</option>
-                        <option [ngValue]="20">20 per pagină</option>
-                      </select>
-                    </div>
-                    <nav>
-                      <ul class="pagination mb-0">
-                        <li class="page-item" [class.disabled]="currentPage === 1">
-                          <a class="page-link" (click)="setPage(currentPage - 1)">Anterior</a>
-                        </li>
-                        <li class="page-item" *ngFor="let page of pages" [class.active]="page === currentPage">
-                          <a class="page-link" (click)="setPage(page)">{{page}}</a>
-                        </li>
-                        <li class="page-item" [class.disabled]="currentPage === totalPages">
-                          <a class="page-link" (click)="setPage(currentPage + 1)">Următor</a>
-                        </li>
-                      </ul>
-                    </nav>
-                  </div>
-                </div>
-                
-              </div>
-              <ng-template #noActivities>
-                <p class="text-muted text-center">Nu există activități înregistrate.</p>
-              </ng-template>
-            </div>
-          </div>
-  
-      <!-- Tables Section -->
-  <!-- Avertizări istoric -->
-  <div class="card shadow-sm mb-4">
-    <div class="card-header bg-light">
-      <h5 class="mb-0">Avertizări istorice</h5>
+
+      <ng-template #noActivities>
+        <p class="text-muted text-center">Nu există activități înregistrate.</p>
+      </ng-template>
+    </div>
+  </div>
+
+  <!-- Avertizări istorice -->
+  <div class="card shadow-sm mb-5 hover-expand px-3">
+    <div class="card-header bg-light d-flex justify-content-between align-items-center">
+      <h5 class="mb-0">Istoric avertizări</h5>
     </div>
     <div class="card-body">
       <div *ngIf="alerts.length > 0; else noAlerts">
         <div class="table-responsive">
-          <table class="table">
-            <thead>
+          <table class="table table-hover align-middle">
+            <thead class="table-light">
               <tr>
                 <th>Mesaj</th>
                 <th>
                   Data și ora
-                  <button class="btn btn-sm" (click)="sortAlerts('timestamp')">
+                  <button class="btn btn-sm btn-link p-0 ms-2" (click)="sortAlerts('timestamp')" aria-label="Sortează după dată">
                     <i class="bi" [ngClass]="getSortIcon('timestamp')"></i>
                   </button>
                 </th>
@@ -165,99 +164,94 @@
               </tr>
             </tbody>
           </table>
+        </div>
 
-          <!-- Pagination Controls for Alerts -->
-          <div class="d-flex justify-content-between align-items-center mt-3">
-            <div class="d-flex align-items-center">
-              <select class="form-select me-2" [(ngModel)]="alertPageSize" (change)="onAlertPageSizeChange()">
-                <option [ngValue]="5">5 per pagină</option>
-                <option [ngValue]="15">15 per pagină</option>
-                <option [ngValue]="20">20 per pagină</option>
-              </select>
-            </div>
-            <nav>
-              <ul class="pagination mb-0">
-                <li class="page-item" [class.disabled]="alertCurrentPage === 1">
-                  <a class="page-link" (click)="setAlertPage(alertCurrentPage - 1)">Anterior</a>
-                </li>
-                <li class="page-item" *ngFor="let page of alertPages" [class.active]="page === alertCurrentPage">
-                  <a class="page-link" (click)="setAlertPage(page)">{{page}}</a>
-                </li>
-                <li class="page-item" [class.disabled]="alertCurrentPage === alertTotalPages">
-                  <a class="page-link" (click)="setAlertPage(alertCurrentPage + 1)">Următor</a>
-                </li>
-              </ul>
-            </nav>
+        <!-- Pagination Controls for Alerts -->
+        <div class="d-flex justify-content-between align-items-center mt-3 hover-expand px-3">
+          <div class="d-flex align-items-center">
+            <label for="alertPageSize" class="me-2 mb-0">Elemente per pagină:</label>
+            <select id="alertPageSize" class="form-select form-select-sm" [(ngModel)]="alertPageSize" (change)="onAlertPageSizeChange()" style="width: auto;">
+              <option [ngValue]="5">5</option>
+              <option [ngValue]="15">15</option>
+              <option [ngValue]="20">20</option>
+            </select>
           </div>
+          <nav aria-label="Pagination avertizări">
+            <ul class="pagination pagination-sm mb-0">
+              <li class="page-item" [class.disabled]="alertCurrentPage === 1">
+                <a class="page-link" (click)="setAlertPage(alertCurrentPage - 1)" tabindex="-1">Anterior</a>
+              </li>
+              <li
+                class="page-item"
+                *ngFor="let page of alertPages"
+                [class.active]="page === alertCurrentPage"
+              >
+                <a class="page-link" (click)="setAlertPage(page)">{{page}}</a>
+              </li>
+              <li class="page-item" [class.disabled]="alertCurrentPage === alertTotalPages">
+                <a class="page-link" (click)="setAlertPage(alertCurrentPage + 1)">Următor</a>
+              </li>
+            </ul>
+          </nav>
         </div>
       </div>
+
       <ng-template #noAlerts>
         <p class="text-muted text-center">Nu există avertizări înregistrate.</p>
       </ng-template>
     </div>
   </div>
 
-
-      
-      </div>
-
-
-
-      <!-- Secțiune EKG -->
-     <div class="card shadow-sm mb-4">
-      <div class="card-header bg-light d-flex justify-content-between align-items-center">
-        <h5 class="mb-0">Diagrama EKG</h5>
-        <button class="btn btn-sm btn-outline-primary" >
-          <i class="bi bi-plus-circle me-1"></i>Generate Test Data
-        </button>
-      </div>
-      <div class="card-body">
-        <div id="ekg-chart-container" style="height: 300px;">
-          <canvas id="ekg-chart"></canvas>
-        </div>
+  <!-- Diagrama EKG -->
+  <div class="card shadow-sm mb-5 hover-expand px-3">
+    <div
+      class="card-header bg-light d-flex justify-content-between align-items-center"
+    >
+      <h5 class="mb-0">Diagrama EKG</h5>
+      <button class="btn btn-outline-primary btn-sm">
+        <i class="bi bi-plus-circle me-1"></i> Generate Test Data
+      </button>
+    </div>
+    <div class="card-body">
+      <div id="ekg-chart-container" style="height: 300px;">
+        <canvas id="ekg-chart" class="w-100" style="max-height: 300px;"></canvas>
       </div>
     </div>
+  </div>
 
-     <!-- Heart Rate Chart -->
-     <div class="card shadow-sm mb-4">
-      <div class="card-header bg-light">
-        <h5 class="mb-0">Ritm cardiac</h5>
-      </div>
-      <div class="card-body">
-        <div style="height: 300px;">
-          <canvas id="heart-rate-chart"></canvas>
-        </div>
+  <!-- Ritm cardiac -->
+  <div class="card shadow-sm mb-5 hover-expand px-3">
+    <div class="card-header bg-light">
+      <h5 class="mb-0">Ritm cardiac</h5>
+    </div>
+    <div class="card-body">
+      <div style="height: 300px;">
+        <canvas id="heart-rate-chart" class="w-100" style="max-height: 300px;"></canvas>
       </div>
     </div>
+  </div>
 
-    <!-- Temperature Chart -->
-    <div class="card shadow-sm mb-4">
-      <div class="card-header bg-light">
-        <h5 class="mb-0">Temperatură</h5>
-      </div>
-      <div class="card-body">
-        <div style="height: 300px;">
-          <canvas id="temperature-chart"></canvas>
-        </div>
+  <!-- Temperatură -->
+  <div class="card shadow-sm mb-5 hover-expand px-3">
+    <div class="card-header bg-light">
+      <h5 class="mb-0">Temperatură</h5>
+    </div>
+    <div class="card-body">
+      <div style="height: 300px;">
+        <canvas id="temperature-chart" class="w-100" style="max-height: 300px;"></canvas>
       </div>
     </div>
+  </div>
 
-    <!-- Humidity Chart -->
-    <div class="card shadow-sm mb-4">
-      <div class="card-header bg-light">
-        <h5 class="mb-0">Umiditate</h5>
-      </div>
-      <div class="card-body">
-        <div style="height: 300px;">
-          <canvas id="humidity-chart"></canvas>
-        </div>
+  <!-- Umiditate -->
+  <div class="card shadow-sm mb-5 hover-expand px-3">
+    <div class="card-header bg-light">
+      <h5 class="mb-0">Umiditate</h5>
+    </div>
+    <div class="card-body">
+      <div style="height: 300px;">
+        <canvas id="humidity-chart" class="w-100" style="max-height: 300px;"></canvas>
       </div>
     </div>
-
-
-
-
-   
+  </div>
 </div>
-
-    

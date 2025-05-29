@@ -1,0 +1,23 @@
+.info-header {
+  background-color: #0d6efd; /* culoarea bootstrap primary */
+  color: white;
+  padding: 1rem 1.5rem;
+  border-radius: 0.375rem; /* border-radius Bootstrap default */
+  box-shadow: 0 0.125rem 0.25rem rgb(13 110 253 / 0.25); /* umbra albastră discretă */
+  font-weight: 500;
+}
+
+.info-header h2 {
+  margin: 0;
+  font-size: 1.75rem;
+}
+
+.info-form {
+  background-color: #f8f9fa; /* culoarea bg-light */
+  border: 1px solid #dee2e6; /* border-ul subtil */
+  box-shadow: 0 0.125rem 0.25rem rgba(0,0,0,0.075);
+}
+
+.info-form .form-label {
+  font-weight: 600;
+}
