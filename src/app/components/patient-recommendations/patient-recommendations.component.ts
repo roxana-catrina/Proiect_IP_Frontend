@@ -415,8 +415,8 @@ private initializeChartConfig(label: string, color: string) {
     const ctx = document.getElementById('heart-rate-chart') as HTMLCanvasElement;
     if (ctx) {
       const config = this.initializeChartConfig('Heart Rate (BPM)', 'rgb(75, 192, 192)');
-      config.options.scales.y.min = 40;
-      config.options.scales.y.max = 120;
+      config.options.scales.y.min = 0;
+      config.options.scales.y.max = 220;
       this.heartRateChart = new Chart(ctx, config);
     }
   }
@@ -425,7 +425,7 @@ private initializeChartConfig(label: string, color: string) {
     const ctx = document.getElementById('temperature-chart') as HTMLCanvasElement;
     if (ctx) {
       const config = this.initializeChartConfig('Temperature (°C)', 'rgb(255, 159, 64)');
-      config.options.scales.y.min = 35;
+      config.options.scales.y.min = 34;
       config.options.scales.y.max = 42;
       this.temperatureChart = new Chart(ctx, config);
     }
@@ -448,7 +448,7 @@ private initializeChartConfig(label: string, color: string) {
           next: (sensorData: Sensor) => {
             if (this.ekgChart && this.heartRateChart && this.temperatureChart && this.humidityChart) {
               // Update EKG with new data
-              this.ekgData = [...this.ekgData.slice(1), parseFloat(sensorData.ekg_signal)];
+              this.ekgData = [...this.ekgData.slice(1), parseFloat(sensorData.ekgSignal)];
               this.ekgChart.data.datasets[0].data = [...this.ekgData];
               
               // Update Heart Rate with new data
@@ -456,11 +456,11 @@ private initializeChartConfig(label: string, color: string) {
               this.heartRateChart.data.datasets[0].data = [...this.heartRateData];
               
               // Update Temperature with new data
-              this.temperatureData = [...this.temperatureData.slice(1), sensorData.temperature];
+              this.temperatureData = [...this.temperatureData.slice(1),parseFloat(sensorData.temperature)];
               this.temperatureChart.data.datasets[0].data = [...this.temperatureData];
               
               // Update Humidity with new data
-              this.humidityData = [...this.humidityData.slice(1), sensorData.humidity];
+              this.humidityData = [...this.humidityData.slice(1), parseFloat(sensorData.humidity)];
               this.humidityChart.data.datasets[0].data = [...this.humidityData];
               
               // Create timestamps for x-axis
@@ -483,10 +483,10 @@ private initializeChartConfig(label: string, color: string) {
     if (!sensors.length) return;
 
     const timestamps = sensors.map(s => new Date(s.timestamp).toLocaleTimeString());
-    const ekgValues = sensors.map(s => parseFloat(s.ekg_signal) || 0);
+    const ekgValues = sensors.map(s => parseFloat(s.ekgSignal) || 0);
     const heartRates = sensors.map(s => parseFloat(s.heartRate) || 0);
-    const temperatures = sensors.map(s => s.temperature || 0);
-    const humidities = sensors.map(s => s.humidity || 0);
+    const temperatures = sensors.map(s => parseFloat(s.temperature) || 0);
+    const humidities = sensors.map(s => parseFloat(s.humidity) || 0);
 
     const charts = [
       { chart: this.ekgChart, data: ekgValues },
