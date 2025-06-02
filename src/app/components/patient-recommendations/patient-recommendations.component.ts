@@ -141,20 +141,21 @@ export class PatientRecommendationsComponent implements OnInit {
   }
 
   private loadPatientData(email: string) {
-    this.authService.getPatientByEmail(email).subscribe({
-      next: (patient: Patient) => {
-        this.patient = patient;
-        if (patient.id) {
-          this.loadPatientRecommendations(patient.id);
-          console.log('Patient data loaded:', this.patient.id);
-          this.loadAlerts(); // Move loadAlerts here after patient data is loaded
-        }
-      },
-      error: (error) => {
-        console.error('Error loading patient data:', error);
+  this.authService.getPatientByEmail(email).subscribe({
+    next: (patient: Patient) => {
+      this.patient = patient;
+      if (patient.id) {
+        this.loadPatientRecommendations(patient.id);
+        this.loadAlerts();
+        this.startRealtimeUpdates(); // 👈 Pornim update-urile în timp real
+        console.log('Patient data loaded and real-time updates started:', this.patient.id);
       }
-    });
-  }
+    },
+    error: (error) => {
+      console.error('Error loading patient data:', error);
+    }
+  });
+}
 
   private loadAlerts() {
     if (!this.patient?.id) {
@@ -404,8 +405,8 @@ private initializeChartConfig(label: string, color: string) {
     const ctx = document.getElementById('ekg-chart') as HTMLCanvasElement;
     if (ctx) {
       const config = this.initializeChartConfig('EKG Signal', 'rgb(255, 99, 132)');
-      config.options.scales.y.min = -2;
-      config.options.scales.y.max = 2;
+      config.options.scales.y.min = 0;
+      config.options.scales.y.max = 5000;
       this.ekgChart = new Chart(ctx, config);
     }
   }
@@ -447,7 +448,7 @@ private initializeChartConfig(label: string, color: string) {
           next: (sensorData: Sensor) => {
             if (this.ekgChart && this.heartRateChart && this.temperatureChart && this.humidityChart) {
               // Update EKG with new data
-              this.ekgData = [...this.ekgData.slice(1), parseFloat(sensorData.ekgSignal)];
+              this.ekgData = [...this.ekgData.slice(1), parseFloat(sensorData.ekg_signal)];
               this.ekgChart.data.datasets[0].data = [...this.ekgData];
               
               // Update Heart Rate with new data
@@ -482,7 +483,7 @@ private initializeChartConfig(label: string, color: string) {
     if (!sensors.length) return;
 
     const timestamps = sensors.map(s => new Date(s.timestamp).toLocaleTimeString());
-    const ekgValues = sensors.map(s => parseFloat(s.ekgSignal) || 0);
+    const ekgValues = sensors.map(s => parseFloat(s.ekg_signal) || 0);
     const heartRates = sensors.map(s => parseFloat(s.heartRate) || 0);
     const temperatures = sensors.map(s => s.temperature || 0);
     const humidities = sensors.map(s => s.humidity || 0);

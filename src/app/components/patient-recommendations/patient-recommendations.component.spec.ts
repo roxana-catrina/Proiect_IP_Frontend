@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import 'jasmine';
 
 import { PatientRecommendationsComponent } from './patient-recommendations.component';
 
