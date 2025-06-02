@@ -155,6 +155,7 @@ export class DashboardPatientComponent implements OnInit, AfterViewInit, OnDestr
       .subscribe({
         next: (sensors) => {
           this.sensors = sensors;
+          console.log('Patient sensors loaded:', this.sensors);
         },
         error: (error) => {
           console.error('Error loading patient sensors:', error);
@@ -358,8 +359,8 @@ export class DashboardPatientComponent implements OnInit, AfterViewInit, OnDestr
     const ctx = document.getElementById('ekg-chart') as HTMLCanvasElement;
     if (ctx) {
       const config = this.initializeChartConfig('EKG Signal', 'rgb(255, 99, 132)');
-      config.options.scales.y.min = -2;
-      config.options.scales.y.max = 2;
+      config.options.scales.y.min = 0;
+      config.options.scales.y.max = 5000;
       this.ekgChart = new Chart(ctx, config);
     }
   }
@@ -405,7 +406,7 @@ private startRealtimeUpdates() {
           
           if (this.ekgChart && this.heartRateChart && this.temperatureChart && this.humidityChart) {
             // Update EKG with new data
-            this.ekgData = [...this.ekgData.slice(1), parseFloat(sensorData.ekgSignal)];
+            this.ekgData = [...this.ekgData.slice(1), parseFloat(sensorData.ekg_signal)];
             this.ekgChart.data.datasets[0].data = [...this.ekgData];
             
             // Update Heart Rate with new data
@@ -443,7 +444,7 @@ private startRealtimeUpdates() {
     if (!sensors.length) return;
 
     const timestamps = sensors.map(s => new Date(s.timestamp).toLocaleTimeString());
-    const ekgValues = sensors.map(s => parseFloat(s.ekgSignal) || 0);
+    const ekgValues = sensors.map(s => parseFloat(s.ekg_signal) || 0);
     const heartRates = sensors.map(s => parseFloat(s.heartRate) || 0);
     const temperatures = sensors.map(s => s.temperature || 0);
     const humidities = sensors.map(s => s.humidity || 0);
