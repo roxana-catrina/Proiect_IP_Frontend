@@ -19,6 +19,7 @@ import { Chart, registerables } from 'chart.js';
 import { webSocket, WebSocketSubject } from 'rxjs/webSocket';
 import { interval, Subscription } from 'rxjs';
 import { SensorService } from '../../services/sensor/sensor.service';
+import { Console } from 'node:console';
 
 Chart.register(...registerables);
 
@@ -64,6 +65,8 @@ export class DashboardPatientComponent implements OnInit, AfterViewInit, OnDestr
   private temperatureData: number[] = Array(50).fill(0);
   private humidityData: number[] = Array(50).fill(0);
 
+  
+
   constructor(private authService: AuthService, private patientService: PatientService,
     private doctorService: DoctorService,
     private alertService: AlertService,
@@ -81,16 +84,20 @@ export class DashboardPatientComponent implements OnInit, AfterViewInit, OnDestr
     if (patient) {
       this.loadPatientData(patient.email);
        // Wait for DOM to be ready
+       // Load initial data
+      //this.loadSensorData();
     setTimeout(() => {
       // Initialize charts first
-
+      this.loadPatientData(patient.email);
       this.initializeEKGChart();
       this.initializeHeartRateChart();
       this.initializeTemperatureChart();
       this.initializeHumidityChart();
       
       // Load initial data
-      this.loadSensorData();
+     // this.loadSensorData();
+
+      
       
       // Then start real-time updates
       this.startRealtimeUpdates();
@@ -126,7 +133,7 @@ export class DashboardPatientComponent implements OnInit, AfterViewInit, OnDestr
           this.loadPatientSensors(patient.id);
           this.loadPatientAlerts(patient.id);
           // Add this line to load sensor data after patient is loaded
-          this.loadSensorData();
+       //   this.loadSensorData();
         }
       },
       error: (error) => {
@@ -156,6 +163,8 @@ export class DashboardPatientComponent implements OnInit, AfterViewInit, OnDestr
         next: (sensors) => {
           this.sensors = sensors;
           console.log('Patient sensors loaded:', this.sensors);
+          console.log('Total sensors:', this.sensors.length);
+          console.log('First sensor:', sensors);
         },
         error: (error) => {
           console.error('Error loading patient sensors:', error);
@@ -204,6 +213,7 @@ export class DashboardPatientComponent implements OnInit, AfterViewInit, OnDestr
           new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()
         );
         this.updatePagedAlerts();
+        console.log('Patient alerts loaded:  AAAAAAAAAAAAAAIIIIIIIIICIIIIIIIIIIIIIIIII', this.alerts);
       },
       error: (error) => {
         console.error('Error loading alerts:', error);
@@ -360,7 +370,7 @@ export class DashboardPatientComponent implements OnInit, AfterViewInit, OnDestr
     if (ctx) {
       const config = this.initializeChartConfig('EKG Signal', 'rgb(255, 99, 132)');
       config.options.scales.y.min = 0;
-      config.options.scales.y.max = 5000;
+      config.options.scales.y.max = 4500;
       this.ekgChart = new Chart(ctx, config);
     }
   }
@@ -370,7 +380,7 @@ export class DashboardPatientComponent implements OnInit, AfterViewInit, OnDestr
     if (ctx) {
       const config = this.initializeChartConfig('Heart Rate (BPM)', 'rgb(75, 192, 192)');
       config.options.scales.y.min = 40;
-      config.options.scales.y.max = 120;
+      config.options.scales.y.max = 220;
       this.heartRateChart = new Chart(ctx, config);
     }
   }
@@ -379,7 +389,7 @@ export class DashboardPatientComponent implements OnInit, AfterViewInit, OnDestr
     const ctx = document.getElementById('temperature-chart') as HTMLCanvasElement;
     if (ctx) {
       const config = this.initializeChartConfig('Temperature (°C)', 'rgb(255, 159, 64)');
-      config.options.scales.y.min = 35;
+      config.options.scales.y.min = 20;
       config.options.scales.y.max = 42;
       this.temperatureChart = new Chart(ctx, config);
     }
@@ -397,7 +407,7 @@ export class DashboardPatientComponent implements OnInit, AfterViewInit, OnDestr
 
 private startRealtimeUpdates() {
   // Poll every 1 second instead of every 100ms
-  this.updateSubscription = interval(1000).subscribe(() => {
+  this.updateSubscription = interval(200).subscribe(() => {
     if (this.patient?.id) {
       // Use the endpoint
       this.sensorService.getLatestSensorData(this.patient.id).subscribe({
@@ -406,7 +416,7 @@ private startRealtimeUpdates() {
           
           if (this.ekgChart && this.heartRateChart && this.temperatureChart && this.humidityChart) {
             // Update EKG with new data
-            this.ekgData = [...this.ekgData.slice(1), parseFloat(sensorData.ekg_signal)];
+            this.ekgData = [...this.ekgData.slice(1), parseFloat(sensorData.ekgSignal)];
             this.ekgChart.data.datasets[0].data = [...this.ekgData];
             
             // Update Heart Rate with new data
@@ -414,11 +424,11 @@ private startRealtimeUpdates() {
             this.heartRateChart.data.datasets[0].data = [...this.heartRateData];
             
             // Update Temperature with new data
-            this.temperatureData = [...this.temperatureData.slice(1), sensorData.temperature];
+            this.temperatureData = [...this.temperatureData.slice(1), parseFloat(sensorData.temperature)];
             this.temperatureChart.data.datasets[0].data = [...this.temperatureData];
             
             // Update Humidity with new data
-            this.humidityData = [...this.humidityData.slice(1), sensorData.humidity];
+            this.humidityData = [...this.humidityData.slice(1), parseFloat(sensorData.humidity)];
             this.humidityChart.data.datasets[0].data = [...this.humidityData];
             
             // Create timestamp for x-axis
@@ -444,10 +454,11 @@ private startRealtimeUpdates() {
     if (!sensors.length) return;
 
     const timestamps = sensors.map(s => new Date(s.timestamp).toLocaleTimeString());
-    const ekgValues = sensors.map(s => parseFloat(s.ekg_signal) || 0);
+    const ekgValues = sensors.map(s => parseFloat(s.ekgSignal) || 0);
     const heartRates = sensors.map(s => parseFloat(s.heartRate) || 0);
-    const temperatures = sensors.map(s => s.temperature || 0);
-    const humidities = sensors.map(s => s.humidity || 0);
+  
+     const temperatures = sensors.map(s => parseFloat(s.temperature) || 0);
+    const humidities = sensors.map(s => parseFloat(s.humidity) || 0);
 
     const charts = [
       { chart: this.ekgChart, data: ekgValues },
