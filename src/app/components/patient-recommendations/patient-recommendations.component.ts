@@ -168,7 +168,7 @@ export class PatientRecommendationsComponent implements OnInit {
         this.alerts = alerts.sort((a, b) =>
           new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()
         );
-        
+
         console.log('Alerts loaded successfully:', this.alerts);
         this.updatePagedAlerts();
       },
@@ -444,7 +444,7 @@ export class PatientRecommendationsComponent implements OnInit {
 
 private startRealtimeUpdates() {
   // Poll every 1 second instead of every 100ms
-  this.updateSubscription = interval(200).subscribe(() => {
+  this.updateSubscription = interval(100).subscribe(() => {
     if (this.patient?.id) {
       // Use the endpoint
       this.sensorService.getLatestSensorData(this.patient.id).subscribe({

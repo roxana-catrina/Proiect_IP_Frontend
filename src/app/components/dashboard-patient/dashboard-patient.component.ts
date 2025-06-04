@@ -407,7 +407,7 @@ export class DashboardPatientComponent implements OnInit, AfterViewInit, OnDestr
 
 private startRealtimeUpdates() {
   // Poll every 1 second instead of every 100ms
-  this.updateSubscription = interval(200).subscribe(() => {
+  this.updateSubscription = interval(150).subscribe(() => {
     if (this.patient?.id) {
       // Use the endpoint
       this.sensorService.getLatestSensorData(this.patient.id).subscribe({
