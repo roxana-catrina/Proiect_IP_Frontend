@@ -19,6 +19,7 @@ import { Chart, registerables } from 'chart.js';
 import { webSocket, WebSocketSubject } from 'rxjs/webSocket';
 import { interval, Subscription } from 'rxjs';
 import { SensorService } from '../../services/sensor/sensor.service';
+import { Console } from 'node:console';
 
 Chart.register(...registerables);
 
@@ -94,7 +95,7 @@ export class DashboardPatientComponent implements OnInit, AfterViewInit, OnDestr
       this.initializeHumidityChart();
       
       // Load initial data
-      this.loadSensorData();
+     // this.loadSensorData();
 
       
       
@@ -132,7 +133,7 @@ export class DashboardPatientComponent implements OnInit, AfterViewInit, OnDestr
           this.loadPatientSensors(patient.id);
           this.loadPatientAlerts(patient.id);
           // Add this line to load sensor data after patient is loaded
-          this.loadSensorData();
+       //   this.loadSensorData();
         }
       },
       error: (error) => {
@@ -212,6 +213,7 @@ export class DashboardPatientComponent implements OnInit, AfterViewInit, OnDestr
           new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()
         );
         this.updatePagedAlerts();
+        console.log('Patient alerts loaded:  AAAAAAAAAAAAAAIIIIIIIIICIIIIIIIIIIIIIIIII', this.alerts);
       },
       error: (error) => {
         console.error('Error loading alerts:', error);
@@ -368,7 +370,7 @@ export class DashboardPatientComponent implements OnInit, AfterViewInit, OnDestr
     if (ctx) {
       const config = this.initializeChartConfig('EKG Signal', 'rgb(255, 99, 132)');
       config.options.scales.y.min = 0;
-      config.options.scales.y.max = 5000;
+      config.options.scales.y.max = 4500;
       this.ekgChart = new Chart(ctx, config);
     }
   }
@@ -405,7 +407,7 @@ export class DashboardPatientComponent implements OnInit, AfterViewInit, OnDestr
 
 private startRealtimeUpdates() {
   // Poll every 1 second instead of every 100ms
-  this.updateSubscription = interval(1000).subscribe(() => {
+  this.updateSubscription = interval(200).subscribe(() => {
     if (this.patient?.id) {
       // Use the endpoint
       this.sensorService.getLatestSensorData(this.patient.id).subscribe({
